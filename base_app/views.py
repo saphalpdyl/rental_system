@@ -4,12 +4,50 @@ from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpRequest
 
-from base_app.models import ApplicationUser
+from base_app.models import ApplicationUser, RenterRegisterRequests
 
 
-def home_view(request):
-    return render(request, "base_app/home.html")
+def home_view(request: HttpRequest):
+    context = {}
+    
+    register_requests = RenterRegisterRequests.objects.filter(
+        application_user = request.user,
+        is_reviewed = False
+    )
 
+    # If a request already exists then notify the program
+    # that the request already exists
+    if register_requests.exists() == True :
+        context['is_already_requested'] = True
+
+    return render(request, "base_app/home.html", context)
+
+def handle_create_renter_register_request(request: HttpRequest):
+    """
+        EXTRACT renter_register_request user=current user, is_reviewed=False
+        CHECK if requests already exists
+        IF IT DOES:
+            REDIRECT to home
+        ELSE : 
+            CREATE requests
+    """
+    register_requests = RenterRegisterRequests.objects.filter(
+        application_user = request.user,
+        is_reviewed = False
+    )
+
+    if register_requests.exists() == False :
+        RenterRegisterRequests(application_user = request.user).save()
+    
+    return redirect(reverse('home'))
+
+def admin_renter_register_requests_list_view(request: HttpRequest):
+    register_requests = RenterRegisterRequests.objects.filter(is_reviewed=False)
+    return render(
+        request,
+        "base_app/admin_renter_register_requests.html",
+        {"requests": register_requests},
+    )
 
 def login_view(request: HttpRequest):
     if request.method == "GET":
@@ -24,7 +62,7 @@ def login_view(request: HttpRequest):
             login(request, user)
             print("Logged in")
 
-        return render(request, "base_app/home.html")
+            return redirect(reverse("home"))
 
     """
         GET / Show Login

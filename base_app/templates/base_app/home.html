@@ -1,36 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    {{ request.user.is_authenticated }}
-    {% if request.user.is_authenticated %}
-    <h1>You are logged in.</h1>
-        {% if show_todo == True %}
-            <h2>Current Format</h2>
-            <ul>
-            {% for todo in array %}
-                <li>
-                    {{todo}}
-                </li>    
-            {% endfor %}
-            </ul>
-            
-            <h2>Desired Format</h2>
-            <ul>
-                <li>do homeowrk</li>
-                <li>do dishes</li>
-                <li>clean room</li>
-            </ul>
-        {% else %}
-        No todos
-        {% endif %}
-    {% else %}
-    <h2>You are logged out.</h2>
-    {% endif %}
+{% extends 'base_app/base.html' %}
 
-</body>
-</html>
+{% block title %}
+Home
+{% endblock title %}
+
+{% block content %}
+
+{% if request.user.is_authenticated and not request.user.is_renter %}
+  {% if is_already_requested %}
+    <button disabled="disabled">You have already sent a request!</button>
+  {% else %}
+    <a href="{% url 'create_register_as_renter' %}">
+      Register as a renter 
+    </a>
+  {% endif %}
+{% endif %}
+{% endblock content %}
