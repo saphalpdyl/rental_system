@@ -1,6 +1,12 @@
 from django.contrib import admin
 
-from base_app.models import ApplicationUser, RenterUser, RenterRegisterRequests, AdminUser, RenterRegisterResults
+from base_app.models import (
+    ApplicationUser,
+    RenterUser,
+    RenterRegisterRequests,
+    AdminUser,
+    RenterRegisterResults,
+)
 
 
 @admin.register(ApplicationUser)
@@ -29,12 +35,11 @@ class RenterRegisterRequestsAdmin(admin.ModelAdmin):
         "data_generated_on",
     ]
 
+
 @admin.register(AdminUser)
 class AdminUserAdmin(admin.ModelAdmin):
-    list_display = [
-        "admin_id",
-        "application_user"
-    ]
+    list_display = ["admin_id", "application_user"]
+
 
 @admin.register(RenterRegisterResults)
 class RenterRegisterResultsAdmin(admin.ModelAdmin):
@@ -43,5 +48,5 @@ class RenterRegisterResultsAdmin(admin.ModelAdmin):
         "data_generated_on",
         "is_approved",
         "reviewed_by",
-        "renter_request"
+        "renter_request",
     ]

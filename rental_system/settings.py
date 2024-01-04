@@ -121,9 +121,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 import os
+
 STATICFILES_DIRS = [
     # Add paths to your static files directories
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, "static"),
 ]
 
 # Default primary key field type/ref
