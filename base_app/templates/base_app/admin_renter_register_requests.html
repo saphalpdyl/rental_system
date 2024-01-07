@@ -9,6 +9,8 @@ Admin - Renter Register Requests List
 <div class="list-wrapper d-flex flex-column align-items-md-center">
   <h2>Renter Requests</h2>
   {% for rq in requests %}
+  <!-- rq = RenterRegisterRequests -->
+  <!-- Fields => reference_id ; data_generated_on ; application_user ; is_reviewed -->
   <div class="container mt-4 request_item">
       <ul class="list-group">
         <li class="list-group-item">
@@ -19,11 +21,23 @@ Admin - Renter Register Requests List
             </div>
             <div class="mt-2 mt-md-0 d-flex">
               <form method="POST" action="{% url 'admin_renter_register_reject' %}">
+                <!-- 
+                  request.POST = {
+                    "csrfmiddlewaretoken": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                    "request_id": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                  }
+                -->
                 {% csrf_token %}
                 <input type="hidden" name="request_id" value="{{ rq.reference_id }}">
                 <input type="submit" type="button" class="btn btn-danger me-2" value="Reject">
               </form>
               <form method="POST" action="{% url 'admin_renter_register_accept' %}">
+                <!-- 
+                  request.POST = {
+                    "csrfmiddlewaretoken": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                    "request_id": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+                  }
+                -->
                 {% csrf_token %}
                 <input type="hidden" name="request_id" value="{{ rq.reference_id }}">
                 <input type="submit" type="button" class="btn btn-success" value="Accept">

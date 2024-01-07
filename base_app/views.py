@@ -27,7 +27,7 @@ def home_view(request: HttpRequest):
         register_requests = RenterRegisterRequests.objects.filter(
             application_user=request.user, is_reviewed=False
         )
-
+        
         # If a request already exists then notify the program
         # that the request already exists
         if register_requests.exists():
@@ -37,20 +37,27 @@ def home_view(request: HttpRequest):
 
 
 def handle_create_renter_register_request(request: HttpRequest):
-    """
-    EXTRACT renter_register_request user=current user, is_reviewed=False
-    CHECK if requests already exists
-    IF IT DOES:
-        REDIRECT to home
-    ELSE :
-        CREATE requests
-    """
+    # Filter RenterRegisterRequests with the condition such that:
+    # 1. The user who made the request( application_user ) is the current user ( request.user )
+    # 2. The request is pending i.e is_reviewed = False
     register_requests = RenterRegisterRequests.objects.filter(
-        application_user=request.user, is_reviewed=False
+        application_user=request.user,
+        is_reviewed=False
     )
 
-    # not register_requests.exists() is equivalent to reigster_requests.exists() == False
-    if not register_requests.exists():
+    # OPTIMAL CASE: register_requests.exists() should be False because in optimal cases no previous requests
+    # should have been made
+
+    # SUB-OPTIMAL CASE: register_requests.exists() becomes True and there is 1 item i.e RenterRegisterRequests
+    # In this case, this indicates that the requests has already been made before and is yet 
+    # to be reviewed by the admin
+
+    # ERROR CASE: register_requests.exists() becomes True and there is >1 item.
+
+    # QuerySet<[]> = False
+    # QuerySet<[RenterRegisterRequests, ...]> = True
+    if register_requests.exists() is False:
+        # Create a new request to register as a renter
         RenterRegisterRequests(application_user=request.user).save()
 
     return redirect(reverse("home"))
@@ -93,47 +100,76 @@ def handle_accept_register_request(request: HttpRequest):
         CREATE RenterRequest result and set is_approved to True ✅
         """
 
+        # EXTRACT values from the POST request
+        # {
+        # "csrfmiddlewaretoken": "~~~~~",
+        # "request_id": "~~~~~"  <-- We need this
+        # }
         request_id = request.POST["request_id"]
-        register_request = RenterRegisterRequests.objects.get(reference_id=request_id)
-        register_request.is_reviewed = True
 
-        current_admin_user = AdminUser.objects.get(application_user=request.user)
+        # Because we are filtering using the PRIMARY KEY i.e request_id
+        # we can be sure that only one associated request ( RenterRegisterRequests ) can exist
+        # That's why we are using .get() instead of .filter()
+        register_request = RenterRegisterRequests.objects.get(reference_id=request_id)
+
+        # Setting the is_reviewed field of the request to True
+        register_request.is_reviewed = True
 
         # current_application_user: ApplicationUser = request.user
         # HOW WAS IT FIXED: here's request.user returns the current user i.e admin
         # However, the value is_renter field to be changed is the ApplicationUser's not admin's
         # Hence, we use the value of register_request.application_user which gives back the user making the request
-        current_application_user: ApplicationUser = register_request.application_user
-        current_application_user.is_renter = True
-        current_application_user.save()
+        requester: ApplicationUser = register_request.application_user # The one who requested i.e Client not Admin
+        requester.is_renter = True
+        requester.save()
 
-        # TODO: Create a RenterUser
+        # Using the current logged in user ( request.user ) which is an ApplicationUser
+        # and filtering the corresponding AdminUser using the FK application_user 
+        # by comparing it with current ( ApplicationUser ) user.
+        current_admin_user = AdminUser.objects.get(application_user=request.user)
 
+        # Created a new Result
         RenterRegisterResults(
             renter_request=register_request,
             reviewed_by=current_admin_user,
-            is_approved=True,
+            is_approved=True, # Because we have accepted
         ).save()
         register_request.save()
+
+        # Create a RenterUser
+        RenterUser(
+            application_user=requester # Create a corresponding RenterUser for the requester
+        ).save()
 
     return redirect(reverse("admin_renter_register_list"))
 
 
 def admin_renter_register_requests_list_view(request: HttpRequest):
-    # Checking if the current user is admin or not
-    # If they aren't admin then, redirect to home
-    # Otherwise let them through
+    # Check if the current user is logged in and is also an admin
     if request.user.is_authenticated and request.user.is_admin:
+        # Filter Renter Register Requests on the basis of the condition that the
+        # request is pending i.e is_reviewed = False
         register_requests = RenterRegisterRequests.objects.filter(is_reviewed=False)
+        
         return render(
-            request,
-            "base_app/admin_renter_register_requests.html",
-            {"requests": register_requests},
+            request, # REQUEST
+            "base_app/admin_renter_register_requests.html", # TEMPLATE 
+            {"requests": register_requests}, # CONTEXT
         )
+
     return redirect(reverse("home"))
 
 
 def login_view(request: HttpRequest):
+    """
+        GET / Show Login
+        POST /
+        USERNAME, PASSWORD
+        authenticate ->  User or None
+        User check ( if user: )
+        Login
+    """
+
     if request.method == "GET":
         return render(request, "base_app/login.html")
     elif request.method == "POST":
@@ -148,14 +184,6 @@ def login_view(request: HttpRequest):
 
     return redirect(reverse("home"))
 
-    """
-        GET / Show Login
-        POST /
-        USERNAME, PASSWORD
-        authenticate ->  User or None
-        User check ( if user: )
-        Login
-    """
 
 
 def register_view(request: HttpRequest):
