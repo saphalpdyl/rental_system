@@ -124,7 +124,7 @@ import os
 
 STATICFILES_DIRS = [
     # Add paths to your static files directories
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "base_app", "static"),
 ]
 
 # Default primary key field type/ref

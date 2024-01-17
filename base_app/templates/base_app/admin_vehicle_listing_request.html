@@ -7,7 +7,7 @@ Admin - Renter Register Requests List
 {% block content %}
 
 <div class="list-wrapper d-flex flex-column align-items-md-center">
-  <h2>Renter Requests</h2>
+  <h2>Vehicle Listing Requests</h2>
   {% for rq in requests %}
   <!-- rq = RenterRegisterRequests -->
   <!-- Fields => reference_id ; data_generated_on ; application_user ; is_reviewed -->
@@ -16,11 +16,13 @@ Admin - Renter Register Requests List
         <li class="list-group-item">
           <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
             <div>
-              <h5 class="mb-0 text-capitalize">{{ rq.application_user.first_name }} {{ rq.application_user.last_name }}</h5>
+              <h5 class="mb-0 text-capitalize">{{ rq.vehicle.vehicle_name }}</h5>
+              <small>{{ rq.vehicle.vehicle_desc }}</small>
+              <p class="mb-0">Requested by: {{ rq.vehicle.owner.application_user.username }}</p>
               <p class="mb-0">Requested on: {{ rq.data_generated_on }}</p>
             </div>
             <div class="mt-2 mt-md-0 d-flex">
-              <form method="POST" action="{% url 'admin_renter_register_reject' %}">
+              <form method="POST" action="{% url 'admin_vehicle_listing_request_reject' rq.reference_id %}">
                 <!-- 
                   request.POST = {
                     "csrfmiddlewaretoken": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
@@ -31,7 +33,7 @@ Admin - Renter Register Requests List
                 <input type="hidden" name="request_id" value="{{ rq.reference_id }}">
                 <input type="submit" type="button" class="btn btn-danger me-2" value="Reject">
               </form>
-              <form method="POST" action="{% url 'admin_renter_register_accept' %}">
+              <form method="POST" action="{% url 'admin_vehicle_listing_request_accept' rq.reference_id %}">
                 <!-- 
                   request.POST = {
                     "csrfmiddlewaretoken": "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",

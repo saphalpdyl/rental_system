@@ -1,0 +1,63 @@
+{% extends 'base_app/base.html' %}
+
+{% block content %}
+<div class="container mt-5 col-4">
+    <h1>Add vehicle for Listing</h1>
+    <br>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      
+      <!-- Vehicle Name -->
+      <div class="mb-3">
+        <label for="vehicle_name" class="form-label">Vehicle Name</label>
+        <input type="text" class="form-control" id="vehicle_name" name="vehicle_name" required>
+      </div>
+      
+      <!-- Vehicle Description -->
+      <div class="mb-3">
+        <label for="vehicle_desc" class="form-label">Vehicle Description</label>
+        <textarea class="form-control" id="vehicle_desc" name="vehicle_desc"></textarea>
+      </div>
+      
+      <!-- Vehicle Company -->
+      <div class="mb-3">
+        <label for="vehicle_company" class="form-label">Vehicle Company</label>
+        <input type="text" class="form-control" id="vehicle_company" name="vehicle_company" required>
+      </div>
+      
+      <!-- Vehicle Type -->
+      <div class="mb-3">
+        <label for="vehicle_type" class="form-label">Vehicle Type</label>
+        <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" required>
+      </div>
+      
+      <!-- Vehicle Seater -->
+      <div class="mb-3">
+        <label for="vehicle_seater" class="form-label">Number of Seats</label>
+        <input type="number" min="1" max="50" class="form-control" id="vehicle_seater" name="vehicle_seater" required>
+      </div>
+      
+      <!-- Vehicle Number Plate -->
+      <div class="mb-3">
+        <label for="vehicle_number_plate" class="form-label">Number Plate</label>
+        <input type="text" class="form-control" id="vehicle_number_plate" name="vehicle_number_plate" required>
+      </div>
+      
+      <!-- Vehicle Documents -->
+      <div class="mb-3">
+        <label for="vehicle_documents" class="form-label">Vehicle Documents</label>
+        <input type="file" class="form-control" id="vehicle_documents" name="vehicle_documents">
+      </div>
+      
+      <!-- Vehicle Description Image -->
+      <div class="mb-3">
+        <label for="vehicle_description_image" class="form-label">Vehicle Description Image</label>
+        <input type="file" class="form-control" id="vehicle_description_image" name="vehicle_description_image">
+      </div>
+      
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary">Submit</button>
+      
+    </form>
+  </div>
+{% endblock content %}

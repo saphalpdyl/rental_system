@@ -6,6 +6,8 @@ from base_app.models import (
     RenterRegisterRequests,
     AdminUser,
     RenterRegisterResults,
+    Vehicles,
+    VehicleListingRequests
 )
 
 
@@ -49,4 +51,23 @@ class RenterRegisterResultsAdmin(admin.ModelAdmin):
         "is_approved",
         "reviewed_by",
         "renter_request",
+    ]
+
+
+@admin.register(Vehicles)
+class VehiclesAdminView(admin.ModelAdmin):
+    list_display = [
+        "reference_id",
+        "vehicle_name",
+        "can_be_listed",
+        "is_available",
+    ]
+
+@admin.register(VehicleListingRequests)
+class VehicleListingRequestsAdmin(admin.ModelAdmin):
+    list_display = [
+        "reference_id",
+        "vehicle",
+        "is_reviewed",
+        "data_generated_on",
     ]
