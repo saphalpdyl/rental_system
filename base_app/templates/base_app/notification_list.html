@@ -1,0 +1,13 @@
+{% extends 'base_app/base.html' %}
+
+{% block content %}
+<h1>Notifications</h1>
+
+{% for nf in notifications %}
+<div>
+  <span>{{ nf.message }}</span>
+  <p>{{ nf.data_generated_on }}</p>
+</div>
+{% endfor %}
+
+{% endblock content %}

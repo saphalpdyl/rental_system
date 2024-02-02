@@ -1,9 +1,9 @@
-import json
-
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpRequest
+from django.contrib import messages
+from django.views import View
 
 from base_app.models import (
     ApplicationUser,
@@ -13,58 +13,61 @@ from base_app.models import (
     RenterRegisterResults,
     Vehicles,
     VehicleListingRequests,
+    Notifications
 )
+from base_app.mixins import AuthRequiredMixin, AdminRequiredMixin
 
 
-def home_view(request: HttpRequest):
-    context = {}
+class HomeView(View):
+    def get(self, request: HttpRequest):
+        context = {}
 
-    # Loading json data from base_app/vehicle_data.json ( Mock Data )
-    with open("base_app/vehicle_data.json") as file:
-        data = json.load(file)
-        context["vehicle_mock_data"] = data[:5]
+        # Retrieve all objects which are approved to be listed(can_be_listed=True)
+        context['vehicles'] = Vehicles.objects.filter(can_be_listed=True,
+                                                      is_available=True)
 
-    if request.user.is_authenticated and not request.user.is_renter:
+        if request.user.is_authenticated and not request.user.is_renter:
+            register_requests = RenterRegisterRequests.objects.filter(
+                application_user=request.user, is_reviewed=False
+            )
+
+            # If a request already exists then notify the program
+            # that the request already exists
+            if register_requests.exists():
+                context["is_already_requested"] = True
+
+        return render(request, "base_app/home.html", context)
+
+
+class HandleCreateRenterRegisterRequest(AuthRequiredMixin, View):
+    def get(self, request: HttpRequest):
+        # Filter RenterRegisterRequests with the condition such that:
+        # 1. The user who made the request( application_user ) is the current user ( request.user )
+        # 2. The request is pending i.e is_reviewed = False
         register_requests = RenterRegisterRequests.objects.filter(
             application_user=request.user, is_reviewed=False
         )
 
-        # If a request already exists then notify the program
-        # that the request already exists
-        if register_requests.exists():
-            context["is_already_requested"] = True
+        # OPTIMAL CASE: register_requests.exists() should be False because in optimal cases no previous requests
+        # should have been made
 
-    return render(request, "base_app/home.html", context)
+        # SUB-OPTIMAL CASE: register_requests.exists() becomes True and there is 1 item i.e RenterRegisterRequests
+        # In this case, this indicates that the requests has already been made before and is yet
+        # to be reviewed by the admin
 
+        # ERROR CASE: register_requests.exists() becomes True and there is >1 item.
 
-def handle_create_renter_register_request(request: HttpRequest):
-    # Filter RenterRegisterRequests with the condition such that:
-    # 1. The user who made the request( application_user ) is the current user ( request.user )
-    # 2. The request is pending i.e is_reviewed = False
-    register_requests = RenterRegisterRequests.objects.filter(
-        application_user=request.user, is_reviewed=False
-    )
+        # QuerySet<[]> = False
+        # QuerySet<[RenterRegisterRequests, ...]> = True
+        if register_requests.exists() is False:
+            # Create a new request to register as a renter
+            RenterRegisterRequests(application_user=request.user).save()
 
-    # OPTIMAL CASE: register_requests.exists() should be False because in optimal cases no previous requests
-    # should have been made
-
-    # SUB-OPTIMAL CASE: register_requests.exists() becomes True and there is 1 item i.e RenterRegisterRequests
-    # In this case, this indicates that the requests has already been made before and is yet
-    # to be reviewed by the admin
-
-    # ERROR CASE: register_requests.exists() becomes True and there is >1 item.
-
-    # QuerySet<[]> = False
-    # QuerySet<[RenterRegisterRequests, ...]> = True
-    if register_requests.exists() is False:
-        # Create a new request to register as a renter
-        RenterRegisterRequests(application_user=request.user).save()
-
-    return redirect(reverse("home"))
+        return redirect(reverse("home"))
 
 
-def handle_reject_register_request(request: HttpRequest):
-    if request.method == "POST":
+class HandleRejectRegisterRequest(View):
+    def post(self, request: HttpRequest):
         """
         EXTRACT request_id from POST request ✅
         GET RenterRegisterRequests object using that request_id ✅
@@ -86,11 +89,11 @@ def handle_reject_register_request(request: HttpRequest):
         ).save()
         register_request.save()
 
-    return redirect(reverse("admin_renter_register_list"))
+        return redirect(reverse("admin_renter_register_list"))
 
 
-def handle_accept_register_request(request: HttpRequest):
-    if request.method == "POST":
+class HandleAcceptRegisterRequest(AuthRequiredMixin, View):
+    def post(self, request: HttpRequest):
         """
         EXTRACT request_id from POST request ✅
         GET RenterRegisterRequests object using that request_id ✅
@@ -144,12 +147,11 @@ def handle_accept_register_request(request: HttpRequest):
             application_user=requester  # Create a corresponding RenterUser for the requester
         ).save()
 
-    return redirect(reverse("admin_renter_register_list"))
+        return redirect(reverse("admin_renter_register_list"))
 
 
-def admin_renter_register_requests_list_view(request: HttpRequest):
-    # Check if the current user is logged in and is also an admin
-    if request.user.is_authenticated and request.user.is_admin:
+class AdminRenterRegisterRequestsListView(AuthRequiredMixin, AdminRequiredMixin, View):
+    def get(self, request: HttpRequest):
         # Filter Renter Register Requests on the basis of the condition that the
         # request is pending i.e is_reviewed = False
         register_requests = RenterRegisterRequests.objects.filter(is_reviewed=False)
@@ -160,12 +162,11 @@ def admin_renter_register_requests_list_view(request: HttpRequest):
             {"requests": register_requests},  # CONTEXT
         )
 
-    return redirect(reverse("home"))
+        return redirect(reverse("home"))
 
 
-def admin_vehicle_listing_requests_list_view(request: HttpRequest):
-    # Check if the current user is logged in and is also an admin
-    if request.user.is_authenticated and request.user.is_admin:
+class AdminVehicleListingRequestsListView(AuthRequiredMixin, AdminRequiredMixin, View):
+    def get(self, request: HttpRequest):
         # Filter Renter Register Requests on the basis of the condition that the
         # request is pending i.e is_reviewed = False
         vehicle_listing_request = VehicleListingRequests.objects.filter(
@@ -178,35 +179,33 @@ def admin_vehicle_listing_requests_list_view(request: HttpRequest):
             {"requests": vehicle_listing_request},  # CONTEXT
         )
 
-    return redirect(reverse("home"))
+        return redirect(reverse("home"))
 
 
-def handle_reject_vehicle_listing_requests(request: HttpRequest, request_id: str):
-    if request.user.is_authenticated and request.user.is_admin:
-        if request.method == "POST":
-            vehicle_request = VehicleListingRequests.objects.get(reference_id=request_id)
-            vehicle_request.vehicle.delete()
+class HandleRejectVehicleListingRequest(AuthRequiredMixin, AdminRequiredMixin, View):
+    def post(self, request: HttpRequest, request_id: str):
+        vehicle_request = VehicleListingRequests.objects.get(reference_id=request_id)
+        vehicle_request.vehicle.delete()
 
-    return redirect(reverse("admin_vehicle_listing_request_list"))
-
-
-def handle_accept_vehicle_listing_requests(request: HttpRequest, request_id: str):
-    if request.user.is_authenticated and request.user.is_admin:
-        if request.method == "POST":
-            vehicle_request = VehicleListingRequests.objects.get(reference_id=request_id)
-
-            vehicle = vehicle_request.vehicle
-            vehicle_request.is_reviewed = True
-            vehicle.can_be_listed = True
-
-            vehicle.save()
-            vehicle_request.save()
-
-    return redirect(reverse("admin_vehicle_listing_request_list"))
+        return redirect(reverse("admin_vehicle_listing_request_list"))
 
 
-def vehicle_add_for_listing_view(request: HttpRequest):
-    if request.user.is_authenticated and request.method == "POST":
+class HandleAcceptVehicleListingRequest(AuthRequiredMixin, AdminRequiredMixin, View):
+    def post(self, request: HttpRequest, request_id: str):
+        vehicle_request = VehicleListingRequests.objects.get(reference_id=request_id)
+
+        vehicle = vehicle_request.vehicle
+        vehicle_request.is_reviewed = True
+        vehicle.can_be_listed = True
+
+        vehicle.save()
+        vehicle_request.save()
+
+        return redirect(reverse("admin_vehicle_listing_request_list"))
+
+
+class VehicleAddForListingView(AuthRequiredMixin, View):
+    def post(self, request: HttpRequest):
         name = request.POST["vehicle_name"]
         desc = request.POST["vehicle_desc"]
         company = request.POST["vehicle_company"]
@@ -236,39 +235,58 @@ def vehicle_add_for_listing_view(request: HttpRequest):
             vehicle=this_vehicle,
         ).save()
 
-    return render(request, "base_app/vehicle_add_for_listing.html")
+        return render(request, "base_app/vehicle_add_for_listing.html")
 
 
-def login_view(request: HttpRequest):
-    """
-    GET / Show Login
-    POST /
-    USERNAME, PASSWORD
-    authenticate ->  User or None
-    User check ( if user: )
-    Login
-    """
+class NotificationListView(AuthRequiredMixin, View):
+    redirect_if_not_authed = reverse_lazy("home")
 
-    if request.method == "GET":
+    def get(self, request: HttpRequest, request_id: str, code=3):
+        notification_queryset = Notifications.objects.filter(notification_for=request.user)
+
+        # Flag all unread notifications(is_read=False) to read(is_read=True)
+        for nf in notification_queryset.filter(is_read=False):
+            nf.is_read = True
+            nf.save()
+
+        return render(request, "base_app/notification_list.html", {
+            "notifications": notification_queryset,
+        })
+
+
+class LoginView(AuthRequiredMixin, View):
+    def get(self, request: HttpRequest):
         return render(request, "base_app/login.html")
-    elif request.method == "POST":
+
+    def post(self, request: HttpRequest):
         username = request.POST["username"]
         password = request.POST["password"]
 
         user = authenticate(request, username=username, password=password)
 
         if user:
+            # Alert that the user is logged in
             login(request, user)
-            print("Logged in")
+            messages.success(request, "You have logged in successfully")
+            return redirect(reverse("home"))
 
-    return redirect(reverse("home"))
+        messages.error(request, "The user details has gone wrong!")
+        return redirect(reverse("login"))
 
 
-def register_view(request: HttpRequest):
-    if request.user.is_authenticated:
-        return redirect(reverse("home"))
+class RegisterView(AuthRequiredMixin, View):
+    """
+        GET / Show Login Done
+        POST / Done
+        Extraction Done
+        Create Done
+        redirect to Login Done
+    """
 
-    if request.method == "POST":
+    def get(self, request: HttpRequest):
+        return render(request, "base_app/register.html")
+
+    def post(self, request: HttpRequest):
         first_name = request.POST["first_name"]
         last_name = request.POST["last_name"]
         username = request.POST["username"]
@@ -284,20 +302,13 @@ def register_view(request: HttpRequest):
             phone_no=phone_no,
             password=password,
         ).save()
+
         return redirect(reverse("login"))
 
-    return render(request, "base_app/register.html")
 
-    """
-        GET / Show Login Done
-        POST / Done
-        Extraction Done
-        Create Done
-        redirect to Login Done
-    """
-
-
-def logout_view(request: HttpRequest):
-    if request.user.is_authenticated:
-        logout(request)
-    return redirect(reverse("home"))
+class HandleLogout(View):
+    def get(self, request: HttpRequest):
+        if request.user.is_authenticated:
+            messages.success(request, "Logged out Successfully!")
+            logout(request)
+        return redirect(reverse("home"))

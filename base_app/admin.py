@@ -7,7 +7,8 @@ from base_app.models import (
     AdminUser,
     RenterRegisterResults,
     Vehicles,
-    VehicleListingRequests
+    VehicleListingRequests,
+    Notifications
 )
 
 
@@ -63,6 +64,7 @@ class VehiclesAdminView(admin.ModelAdmin):
         "is_available",
     ]
 
+
 @admin.register(VehicleListingRequests)
 class VehicleListingRequestsAdmin(admin.ModelAdmin):
     list_display = [
@@ -70,4 +72,15 @@ class VehicleListingRequestsAdmin(admin.ModelAdmin):
         "vehicle",
         "is_reviewed",
         "data_generated_on",
+    ]
+
+
+@admin.register(Notifications)
+class NotificationsAdmin(admin.ModelAdmin):
+    list_display = [
+        "reference_id",
+        "data_generated_on",
+        "message",
+        "notification_for",
+        "is_read"
     ]

@@ -15,6 +15,28 @@
       html,body {
         height: 100vh;
       }
+
+      .notification-symbol {
+        height: 30px;
+        width: 30px;
+        border: 1px solid rgba(0,0,0,0.4);
+        color: rgba(0,0,0,0.7);
+        border-radius: 50%;
+        cursor: pointer;
+        text-decoration: none;
+        position: relative;
+      }
+
+      .notification-badge::before {
+        content: '';
+        position: absolute;
+        top:0;
+        right:0;
+        background-color:red;
+        border-radius:50%;
+        height:7px;
+        width:7px;
+      }
     </style>
 </head>
 <body>
@@ -43,6 +65,9 @@
             <a type="button" class="btn btn-primary" href="{% url 'login' %}">Log In</a>
           </div>
           {% else %}
+          <a href="{% url 'notification_list_view' %}" class="notification-symbol {% if has_new_notifications%}notification-badge{% endif %} d-flex align-items-center justify-content-center me-3">
+            <i class="fa fa-bell"></i>
+          </a>
           <div class="dropdown">
             <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fas fa-user"></i>
@@ -66,6 +91,14 @@
       </div>
     </nav>
   {% endif %}
+
+  {% for msg in messages %}
+    <div class="alert alert-{{ msg.tags }} alert-dismissible fade show" role="alert">
+      <strong>Holy guacamole!</strong> {{ msg }} 
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+
   {% block content %}
   {% endblock content %}
 

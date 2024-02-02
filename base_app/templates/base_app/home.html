@@ -23,36 +23,45 @@ Home
     background-position: center;
     background-repeat: no-repeat;
   }
+
+  .card-img-top {
+    height: 40%;
+    object-fit: cover;
+  }
+  .card-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .description {
+    color: #888;
+    font-size: 11px;
+    height: 6rem;
+    overflow-y: hidden;
+  }
+  .availability-bar {
+    height: 20px;
+    width: 100%;
+    font-weight: bold;
+  }
 </style>
 {% endblock css %}
 
 {% block content %}
 <div class="d-flex flex-column h-100 main">
-  <!-- Render Mock Data -->
   <div class="d-flex gap-3">
-    {% for vh in vehicle_mock_data %}
-    <div class="container mt-4">
-      <!-- Vehicle Information Card -->
-      <div class="card">
-          <div class="card-body">
-              <!-- Vehicle Name -->
-              <h5 class="card-title">{{ vh.vehicle_name }}</h5>
-              <hr>
-              <p class="text-secondary">
-                {{ vh.vehicle_desc }}
-              </p>
-              <!-- Vehicle Type Icon -->
-              <p class="card-text"><i class="fas fa-car"></i> Vehicle Type: {{ vh.vehicle_type }}</p>
-              <!-- People Accommodate Icon -->
-              <p class="card-text"><i class="fas fa-users"></i> {{ vh.vehicle_seater }}</p>
-              <!-- Availability Icon -->
-              <p class="card-text"><i class="fas fa-calendar-check"></i> Availability: {{ vh.is_available|yesno:"✔,❌" }}</p>
-              <!-- Vehicle Company Icon -->
-              <p class="card-text"><i class="fas fa-building"></i> Vehicle Company: {{ vh.vehicle_company }}</p>
-          </div>
+    {% for vh in vehicles %}
+      <div class="card col-3">
+        <img src="{{ vh.vehicle_description_image.url }}" class="card-img-top" alt="Car Image">
+        <div class="card-body">
+          <h6 class="card-title">
+            {{ vh.vehicle_name }}
+            <i class="fas fa-{{ vh.vehicle_type }}"> {{ vh.vehicle_seater }}</i>
+          </h6>
+          <p class="description">{{ vh.vehicle_desc }}</p>
+          <div class="availability-bar text-white bg-success d-flex align-items-center justify-content-center" disabled><small>Available</small></div>
+        </div>
       </div>
-      <!-- End Vehicle Information Card -->
-    </div>
     {% endfor %}
   </div>
   

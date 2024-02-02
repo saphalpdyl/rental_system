@@ -77,3 +77,10 @@ class Vehicles(BaseClass):
 class VehicleListingRequests(BaseClass):
     vehicle = models.ForeignKey(Vehicles, on_delete=models.CASCADE)
     is_reviewed = models.BooleanField(default=False)
+
+
+class Notifications(BaseClass):
+    notification_for = models.ForeignKey(ApplicationUser, on_delete=models.CASCADE)
+    message = models.CharField(max_length=100)
+    desc = models.TextField(null=True, blank=True)
+    is_read = models.BooleanField(default=False)

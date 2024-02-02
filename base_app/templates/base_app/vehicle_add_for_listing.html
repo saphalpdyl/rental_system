@@ -26,11 +26,14 @@
       </div>
       
       <!-- Vehicle Type -->
-      <div class="mb-3">
-        <label for="vehicle_type" class="form-label">Vehicle Type</label>
-        <input type="text" class="form-control" id="vehicle_type" name="vehicle_type" required>
-      </div>
-      
+     <div class="input-group">
+       <select class="form-select" id="vehicleSelect">
+          <option value="car"> Car</option>
+          <option value="truck"> Truck</option>
+          <option value="motorcycle"> Motorcycle</option>
+          <option value="bicycle">Bicycle</option>
+        </select>
+      </div> 
       <!-- Vehicle Seater -->
       <div class="mb-3">
         <label for="vehicle_seater" class="form-label">Number of Seats</label>

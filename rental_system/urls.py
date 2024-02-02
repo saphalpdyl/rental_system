@@ -5,62 +5,68 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from base_app.views import (
-    home_view,
-    login_view,
-    logout_view,
-    register_view,
-    admin_renter_register_requests_list_view,
-    admin_vehicle_listing_requests_list_view,
-    vehicle_add_for_listing_view,
-    handle_create_renter_register_request,
-    handle_reject_register_request,
-    handle_accept_register_request,
-    handle_reject_vehicle_listing_requests,
-    handle_accept_vehicle_listing_requests
+    HomeView,
+    LoginView,
+    HandleLogout,
+    RegisterView,
+    AdminRenterRegisterRequestsListView,
+    AdminVehicleListingRequestsListView,
+    VehicleAddForListingView,
+    NotificationListView,
+    HandleCreateRenterRegisterRequest,
+    HandleRejectRegisterRequest,
+    HandleAcceptRegisterRequest,
+    HandleRejectVehicleListingRequest,
+    HandleAcceptVehicleListingRequest
 )
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", home_view, name="home"),
-    path("login/", login_view, name="login"),
-    path("logout/", logout_view, name="logout"),
-    path("register/", register_view, name="register"),
+    path("", HomeView.as_view(), name="home"),
+    path("login/", LoginView.as_view(), name="login"),
+    path("logout/", HandleLogout.as_view(), name="logout"),
+    path("register/", RegisterView.as_view(), name="register"),
     path(
         "renter/register_as_renter/",
-        handle_create_renter_register_request,
+        HandleCreateRenterRegisterRequest.as_view(),
         name="create_register_as_renter",
     ),
-    path("myrenter/add/", vehicle_add_for_listing_view, name="vehicle_add"),
+    path("myrenter/add/", VehicleAddForListingView.as_view(), name="vehicle_add"),
     path(
         "pwuser/renter_requests/",
-        admin_renter_register_requests_list_view,
+        AdminRenterRegisterRequestsListView.as_view(),
         name="admin_renter_register_list",
     ),
     path(
         "pwuser/vehicle_listing_requests/",
-        admin_vehicle_listing_requests_list_view,
+        AdminVehicleListingRequestsListView.as_view(),
         name="admin_vehicle_listing_request_list",
     ),
     path(
         "pwuser/vehicle_listing_requests/reject/<str:request_id>",
-        handle_reject_vehicle_listing_requests,
+        HandleRejectVehicleListingRequest.as_view(),
         name="admin_vehicle_listing_request_reject"
     ),
     path(
         "pwuser/vehicle_listing_requests/accept/<str:request_id>",
-        handle_accept_vehicle_listing_requests,
+        HandleAcceptVehicleListingRequest.as_view(),
         name="admin_vehicle_listing_request_accept"
     ),
     path(
         "pwuser/renter_requests/reject/",
-        handle_reject_register_request,
+        HandleRejectRegisterRequest.as_view(),
         name="admin_renter_register_reject",
     ),
     path(
         "pwuser/renter_requests/accept/",
-        handle_accept_register_request,
+        HandleAcceptRegisterRequest.as_view(),
         name="admin_renter_register_accept",
     ),
+    path(
+        "notifications/",
+        NotificationListView.as_view(),
+        name="notification_list_view"
+    )
 ]
 
 
