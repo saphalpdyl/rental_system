@@ -258,6 +258,13 @@ class NotificationListView(AuthRequiredMixin, View):
             "notifications": notification_queryset,
         })
 
+    def post(self, request: HttpRequest):
+        notification_id = request.POST.get("notification_id")
+        notification = Notifications.objects.get(reference_id=notification_id)
+        notification.delete()
+
+        return redirect(reverse("notification_list_view"))
+
 
 class LoginView(NoAuthRequiredMixin, View):
     def get(self, request: HttpRequest):
