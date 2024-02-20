@@ -15,7 +15,7 @@ from base_app.models import (
     VehicleListingRequests,
     Notifications
 )
-from base_app.mixins import AuthRequiredMixin, AdminRequiredMixin
+from base_app.mixins import AuthRequiredMixin, AdminRequiredMixin, NoAuthRequiredMixin
 
 
 class HomeView(View):
@@ -207,6 +207,9 @@ class HandleAcceptVehicleListingRequest(AuthRequiredMixin, AdminRequiredMixin, V
 
 
 class VehicleAddForListingView(AuthRequiredMixin, View):
+    def get(self, request: HttpRequest):
+        return render(request, "base_app/vehicle_add_for_listing.html")
+
     def post(self, request: HttpRequest):
         name = request.POST["vehicle_name"]
         desc = request.POST["vehicle_desc"]
@@ -243,7 +246,7 @@ class VehicleAddForListingView(AuthRequiredMixin, View):
 class NotificationListView(AuthRequiredMixin, View):
     redirect_if_not_authed = reverse_lazy("home")
 
-    def get(self, request: HttpRequest, request_id: str, code=3):
+    def get(self, request: HttpRequest):
         notification_queryset = Notifications.objects.filter(notification_for=request.user)
 
         # Flag all unread notifications(is_read=False) to read(is_read=True)
@@ -256,7 +259,7 @@ class NotificationListView(AuthRequiredMixin, View):
         })
 
 
-class LoginView(AuthRequiredMixin, View):
+class LoginView(NoAuthRequiredMixin, View):
     def get(self, request: HttpRequest):
         return render(request, "base_app/login.html")
 

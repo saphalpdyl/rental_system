@@ -3,25 +3,27 @@ from django.http import HttpRequest
 from django.contrib import messages
 
 
+# Check if the user is authed before rendering the view
 class AuthRequiredMixin:
-    redirect_if_not_authed = None
-
     def dispatch(self, request: HttpRequest, *args, **kwargs):
         if not request.user.is_authenticated:
             messages.error(request, "Please Log in first")
-            if self.redirect_if_not_authed is not None:
-                return redirect(self.redirect_if_not_authed)
             return redirect(reverse("login"))
         return super().dispatch(request, *args, **kwargs)
 
 
-class AdminRequiredMixin:
-    redirect_if_not_admin = None
+# Check if the user is not authenticated before rendering the view
+class NoAuthRequiredMixin:
+    def dispatch(self, request: HttpRequest, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.warning(request, "User is already logged in!")
+            return redirect(reverse("home"))
+        return super().dispatch(request, *args, **kwargs)
 
+
+class AdminRequiredMixin:
     def dispatch(self, request: HttpRequest, *args, **kwargs):
         if not request.user.is_admin:
             messages.error(request, "The current user is not admin")
-            if self.redirect_if_not_admin is not None:
-                return redirect(self.redirect_if_not_authed)
-            return redirect(reverse("login"))
+            return redirect(reverse("home"))
         return super().dispatch(request, *args, **kwargs)

@@ -81,6 +81,6 @@ class VehicleListingRequests(BaseClass):
 
 class Notifications(BaseClass):
     notification_for = models.ForeignKey(ApplicationUser, on_delete=models.CASCADE)
-    message = models.CharField(max_length=100)
+    message = models.CharField(max_length=100)  # Main title
     desc = models.TextField(null=True, blank=True)
     is_read = models.BooleanField(default=False)

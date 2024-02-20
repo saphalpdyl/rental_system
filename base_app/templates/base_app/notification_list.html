@@ -4,10 +4,29 @@
 <h1>Notifications</h1>
 
 {% for nf in notifications %}
-<div>
-  <span>{{ nf.message }}</span>
-  <p>{{ nf.data_generated_on }}</p>
+<div class="notifications d-flex justify-content-between mx-5 my-2 border px-3 py-1" data-datetime="{{ nf.data_generated_on|date:"c" }}">
+  <div class="d-flex flex-column">
+    <span>{{ nf.message }}</span>
+    <small>{{ nf.desc }}</small>
+  </div>
+  <p class="output"></p>
 </div>
 {% endfor %}
 
 {% endblock content %}
+
+{% block scripts %}
+  <script>
+  const notifications = document.getElementsByClassName("notifications");
+  for (notification_element of notifications) {
+    const datetime = notification_element.dataset.datetime
+    const output = notification_element.getElementsByClassName("output")[0]
+    const timeDifferenceInWords = moment
+      .utc(datetime)
+      .local()
+      .startOf("seconds")
+      .fromNow();
+    output.textContent = timeDifferenceInWords
+  }
+  </script>
+{% endblock scripts %}
