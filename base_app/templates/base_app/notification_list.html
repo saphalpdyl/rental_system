@@ -9,8 +9,19 @@
     <span>{{ nf.message }}</span>
     <small>{{ nf.desc }}</small>
   </div>
-  <p class="output"></p>
+  <div class="d-flex gap-3">
+    <p class="output"></p>
+    <form method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="notification_id" value="{{ nf.reference_id}}">
+      <button type="submit" class="btn btn-danger">
+        <i class="fa fa-trash"></i>
+      </button>
+    </form>
+  </div>
 </div>
+{% empty %}
+<h2>No Notifications for you.</h2>
 {% endfor %}
 
 {% endblock content %}
