@@ -286,7 +286,7 @@ class LoginView(NoAuthRequiredMixin, View):
         return redirect(reverse("login"))
 
 
-class RegisterView(AuthRequiredMixin, View):
+class RegisterView(NoAuthRequiredMixin, View):
     """
         GET / Show Login Done
         POST / Done
