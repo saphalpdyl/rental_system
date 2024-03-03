@@ -4,6 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.http import HttpRequest
 from django.contrib import messages
 from django.views import View
+from django.db.models import Q
 
 from base_app.models import (
     ApplicationUser,
@@ -22,9 +23,12 @@ class HomeView(View):
     def get(self, request: HttpRequest):
         context = {}
 
+        # Search feature
+        search_query = request.GET.get("search_query", "")
+        query = (Q(vehicle_name__icontains=search_query) | Q(vehicle_desc__icontains=search_query)) & Q(is_available=True) & Q(can_be_listed=True)
+
         # Retrieve all objects which are approved to be listed(can_be_listed=True)
-        context['vehicles'] = Vehicles.objects.filter(can_be_listed=True,
-                                                      is_available=True)
+        context['vehicles'] = Vehicles.objects.filter(query)
 
         if request.user.is_authenticated and not request.user.is_renter:
             register_requests = RenterRegisterRequests.objects.filter(

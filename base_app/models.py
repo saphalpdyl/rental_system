@@ -2,6 +2,7 @@ import uuid
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 
 def generate_uuid():
@@ -73,6 +74,9 @@ class Vehicles(BaseClass):
     is_available = models.BooleanField(default=True)
     can_be_listed = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.vehicle_name
+
 
 class VehicleListingRequests(BaseClass):
     vehicle = models.ForeignKey(Vehicles, on_delete=models.CASCADE)
@@ -84,3 +88,20 @@ class Notifications(BaseClass):
     message = models.CharField(max_length=100)  # Main title
     desc = models.TextField(null=True, blank=True)
     is_read = models.BooleanField(default=False)
+
+
+# Enums
+class RentingStatus(models.TextChoices):
+    PENDING = "PENDING"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+
+
+class VehicleRentingRequests(BaseClass):
+    buyer = models.ForeignKey(ApplicationUser, on_delete=models.CASCADE, related_name='renting_requests')
+    vehicle = models.ForeignKey(Vehicles, on_delete=models.CASCADE, related_name='renting_requests')
+    # Rent for how many days?
+    renting_period = models.PositiveIntegerField()
+    status = models.TextField(
+        choices=RentingStatus
+    )

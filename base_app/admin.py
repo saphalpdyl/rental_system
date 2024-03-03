@@ -8,7 +8,8 @@ from base_app.models import (
     RenterRegisterResults,
     Vehicles,
     VehicleListingRequests,
-    Notifications
+    Notifications,
+    VehicleRentingRequests
 )
 
 
@@ -83,4 +84,14 @@ class NotificationsAdmin(admin.ModelAdmin):
         "message",
         "notification_for",
         "is_read"
+    ]
+
+
+@admin.register(VehicleRentingRequests)
+class VehicleRentingRequestsAdmin(admin.ModelAdmin):
+    list_display = [
+        "buyer",
+        "vehicle",
+        "renting_period",
+        "status"
     ]
