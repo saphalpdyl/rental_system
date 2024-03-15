@@ -27,3 +27,11 @@ class AdminRequiredMixin:
             messages.error(request, "The current user is not admin")
             return redirect(reverse("home"))
         return super().dispatch(request, *args, **kwargs)
+
+
+class RenterRequiredMixin:
+    def dispatch(self, request: HttpRequest, *args, **kwargs):
+        if not request.user.is_renter:
+            messages.error(request, "The current user is not a renter")
+            return redirect(reverse("home"))
+        return super().dispatch(request, *args, **kwargs)
