@@ -3,7 +3,8 @@ from django.urls import path
 from base_app.views.renter import (
     VehicleAddForListingView,
     HandleCreateRenterRegisterRequest,
-    RenterDashboardVehicleListView
+    RenterDashboardVehicleListView,
+    RenterDashboardVehicleRequestListView,
 )
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
         name="create_register_as_renter",
     ),
     path("myrenter/vehicles/list/", RenterDashboardVehicleListView.as_view(), name="renter_dashboard_vehicle_list"),
+    path("myrenter/vehicles/<str:vehicle_id>/requests/", RenterDashboardVehicleRequestListView.as_view(), name="renter_dashboard_vehicle_request_list"),
 ]

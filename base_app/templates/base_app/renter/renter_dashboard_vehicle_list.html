@@ -56,12 +56,12 @@
         </div>
         <div class="col-12 d-flex gap-2 ">
           <div class="col-8 btn btn-outline-success">Available for booking <i class="fa fa-check"></i></div>
-          <div class="col-4 btn btn-primary position-relative">
+          <a href="{% url 'renter_dashboard_vehicle_request_list' vehicle.reference_id %}" class="col-4 btn btn-primary position-relative">
             Requests
             {% if request_count > 0 %}
             <span class="badge badge-pill badge-danger bg-danger">{{ request_count }}</span>
             {% endif %}
-          </div>
+          </a>
 
         </div>
       </div>
