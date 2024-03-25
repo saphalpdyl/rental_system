@@ -2,7 +2,7 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect, reverse
 from django.views import View
 
-from base_app.mixins import AuthRequiredMixin
+from base_app.mixins import AuthRequiredMixin, RenterRequiredMixin
 from base_app.models import (
     Vehicles,
     RenterUser,
@@ -10,7 +10,7 @@ from base_app.models import (
 )
 
 
-class VehicleAddForListingView(AuthRequiredMixin, View):
+class VehicleAddForListingView(AuthRequiredMixin, RenterRequiredMixin, View):
     def get(self, request: HttpRequest):
         return render(request, "base_app/renter/vehicle_add_for_listing.html")
 

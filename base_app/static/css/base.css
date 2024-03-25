@@ -1,0 +1,36 @@
+nav {
+    font-family: "Raleway", sans-serif;
+}
+
+.notification-symbol {
+    height: 30px;
+    width: 30px;
+    border: 1px solid rgba(0,0,0,0.4);
+    color: rgba(0,0,0,0.7);
+    border-radius: 50%;
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+}
+
+.notification-badge::before {
+    content: '';
+    position: absolute;
+    top:0;
+    right:0;
+    background-color:red;
+    border-radius:50%;
+    height:7px;
+    width:7px;
+}
+
+html, body {
+    font-family: 'Nunito Sans', sans-serif;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
+}
+
+h1 {
+    font-family: "Raleway";
+}

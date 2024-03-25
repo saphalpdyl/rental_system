@@ -1,0 +1,82 @@
+{% extends 'base_app/base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/vehicle_details.css' %}">
+{% endblock css %}
+
+{% block content %}
+<div class="main-wrapper px-3">
+    <div class="d-flex mb-5">
+        <a href="{% url 'buyer_vehicle_list' %}" class="btn btn-dark back-btn">
+            <i class="fa fa-arrow-left"></i>
+        </a>
+    </div>
+    <div class="d-flex col-12">
+        <!-- Content -->
+        <div class="col-6">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="fw-bold vehicle-detail-content-title">{{ vehicle.vehicle_name }}</h1>
+                <div class="d-flex gap-2 align-items-center px-2 py-1 rounded-2 border-success border">
+                    <span class="vehicle-detail-content-paragraph text-success">Available</span>
+                    <i class="fa fa-check text-success fs-7"></i>
+                </div>
+            </div>
+            <hr>
+            <p class="vehicle-detail-content-paragraph">{{ vehicle.vehicle_desc }}</p>
+
+            <div class="vehicle-detail-display-dashboard mt-5">
+                <div class="col-6 d-flex flex-column">
+                    <span class="vehicle-detail-display-dashboard-subtitle">Price</span>
+                    <span class="vehicle-detail-display-dashboard-price">Rs. {{ vehicle.price }}</span>
+                </div>
+                <div class="col-6 vehicle-detail-display-dashboard-detail-wrapper">
+                    <div class="vehicle-detail-display-dashboard-detail-card">
+                        <i class="fa fa-user"></i>
+                        <div class="dashboard-detail-card-detail-container">
+                            <span class="detail-title">Seats</span>
+                            <span class="detail-value">{{ vehicle.vehicle_seater }}</span>
+                        </div>
+                    </div>
+                    <div class="vehicle-detail-display-dashboard-detail-card">
+                        <i class="fa fa-car"></i>
+                        <div class="dashboard-detail-card-detail-container">
+                            <span class="detail-title">Type</span>
+                            <span class="detail-value">{{ vehicle.vehicle_type }}</span>
+                        </div>
+                    </div>
+                    <div class="vehicle-detail-display-dashboard-detail-card">
+                        <i class="fa fa-gas-pump"></i>
+                        <div class="dashboard-detail-card-detail-container">
+                            <span class="detail-title">Mileage</span>
+                            <span class="detail-value">28-29 MPG</span>
+                        </div>
+                    </div>
+                    <div class="vehicle-detail-display-dashboard-detail-card">
+                        <i class="fa fa-weight-hanging"></i>
+                        <div class="dashboard-detail-card-detail-container">
+                            <span class="detail-title">Weight</span>
+                            <span class="detail-value">1,189 lbs</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Image -->
+        <div class="col-6 d-flex justify-content-center">
+            <div
+                style="background: url('{{ vehicle.vehicle_description_image.url }}');"
+                class="col-10 vehicle-image"
+            ></div>
+        </div>
+    </div>
+    {% if not is_previous_request_exists  %}
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success mt-3 p-3 fs-5">Rent this vehicle</button>
+    </form>
+    {% else %}
+    <button class="btn btn-secondary mt-3 p-3 fs-5">Already requested</button>
+    {% endif %}
+</div>
+{% endblock content %}

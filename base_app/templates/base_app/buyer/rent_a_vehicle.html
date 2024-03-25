@@ -1,0 +1,42 @@
+{% extends 'base_app/base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/vehicle_listing.css' %}">
+<style>
+  .main-wrapper {
+    padding: 0rem 2rem;
+  }
+
+  .vehicle-listing-card {
+    cursor: pointer;
+  }
+
+  .vehicle-listing-card:hover {
+    background-color: #eeeeee;
+  }
+
+</style>
+{% endblock css %}
+
+{% block content %}
+<div class="d-flex flex-column h-100 main-wrapper">
+  <div class="vehicle-list">
+    {% for vh in vehicles %}
+    <a href="{% url 'buyer_vehicle_details' vh.reference_id %}" class="vehicle-listing-card">
+      <div class="vehicle-listing-card-image" style="background: url('{{ vh.vehicle_description_image.url}}');"></div>
+      <div class="vehicle-listing-card-details-container d-flex flex-column justify-content-between">
+        <div>
+          <div class="vehicle-listing-card-details">
+            <span class="vehicle-listing-card-title">{{ vh.vehicle_name }}</span>
+            <div class="vehicle-listing-card-seat">4</div>
+          </div>
+          <p class="vehicle-listing-card-desc">{{ vh.vehicle_desc }}</p>
+        </div>
+        <div class="vehicle-listing-card-bottom-banner">Available</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}

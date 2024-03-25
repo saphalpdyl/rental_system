@@ -16,6 +16,20 @@
   background-repeat: no-repeat!important;
   border-radius: 10px;
 }
+
+.vehicle-desc {
+  display: flex;
+  font-size: 12px;
+  max-height: 100px;
+  color: #000a;
+  overflow: hidden;
+}
+
+.badge {
+  position: absolute!important;
+  top: -5px!important;
+  right: -10px!important;
+}
 </style>
 {% endblock css %}
 
@@ -28,23 +42,28 @@
     </ul>
   </div>
   <div class="content-container col-10">
-    {% for vehicle in vehicles %}
-    <div class="vehicle-list-item d-flex px-5 py-3 mx-3 gap-2">
+    {% for request_count , vehicle in vehicles_with_request_count %}
+    <div class="vehicle-list-item d-flex flex px-5 py-3 mx-3 gap-2">
       <div 
         style="background:url('{{ vehicle.vehicle_description_image.url }}');"
         class="vehicle-item-image-container col-5"
-      >
-        <!--
-        <img 
-          style="max-height: 200px;"
-          src="{{ vehicle.vehicle_description_image.url }}" 
-          alt="Vehicle List image">
-        -->
-      </div>
-      <div class="vehicle-item-detail-container col-7">
-        <strong>{{ vehicle.vehicle_name }}</strong>
-        <br>
-        <small>{{ vehicle.vehicle_desc }}</small>
+      ></div>
+      <div class="vehicle-item-detail-container col-7 d-flex flex-column justify-content-between">
+        <div>
+          <strong>{{ vehicle.vehicle_name }}</strong>
+          <br>
+          <small class="vehicle-desc">{{ vehicle.vehicle_desc }}</small>
+        </div>
+        <div class="col-12 d-flex gap-2 ">
+          <div class="col-8 btn btn-outline-success">Available for booking <i class="fa fa-check"></i></div>
+          <div class="col-4 btn btn-primary position-relative">
+            Requests
+            {% if request_count > 0 %}
+            <span class="badge badge-pill badge-danger bg-danger">{{ request_count }}</span>
+            {% endif %}
+          </div>
+
+        </div>
       </div>
     </div>
     {% endfor %}

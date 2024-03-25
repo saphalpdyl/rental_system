@@ -61,6 +61,7 @@ class RenterRegisterResults(BaseClass):
 
 class Vehicles(BaseClass):
     owner = models.ForeignKey(RenterUser, on_delete=models.CASCADE)
+    price = models.FloatField()
     vehicle_name = models.CharField(max_length=32)
     vehicle_desc = models.TextField(null=True, blank=True)
     vehicle_company = models.CharField(max_length=30)
@@ -102,6 +103,4 @@ class VehicleRentingRequests(BaseClass):
     vehicle = models.ForeignKey(Vehicles, on_delete=models.CASCADE, related_name='renting_requests')
     # Rent for how many days?
     renting_period = models.PositiveIntegerField()
-    status = models.TextField(
-        choices=RentingStatus
-    )
+    status = models.TextField(choices=RentingStatus)
