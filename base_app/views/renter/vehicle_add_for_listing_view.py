@@ -17,6 +17,7 @@ class VehicleAddForListingView(AuthRequiredMixin, RenterRequiredMixin, View):
     def post(self, request: HttpRequest):
         name = request.POST["vehicle_name"]
         desc = request.POST["vehicle_desc"]
+        price = request.POST["vehicle_price"]
         company = request.POST["vehicle_company"]
         vtype = request.POST["vehicle_type"]
         seater = request.POST["vehicle_seater"]
@@ -31,6 +32,7 @@ class VehicleAddForListingView(AuthRequiredMixin, RenterRequiredMixin, View):
             owner=current_renter_user,
             vehicle_name=name,
             vehicle_desc=desc,
+            price=price,
             vehicle_company=company,
             vehicle_type=vtype,
             vehicle_seater=seater,

@@ -3,7 +3,7 @@ from django.views import View
 from django.http import HttpRequest, HttpResponse
 from django.contrib import messages
 
-from base_app.models import Vehicles, VehicleRentingRequests, RentingStatus
+from base_app.models import Vehicles, VehicleRentingRequests, RentingStatus, Notifications
 from base_app.mixins import AuthRequiredMixin
 
 
@@ -24,14 +24,14 @@ class BuyerVehicleDetailsView(AuthRequiredMixin, View):
         except Exception as e:
             messages.error(request, f"ERROR: {e}")
             return redirect(reverse("home"))
-    
+
     # INFO: Handles renting requests creation
     def post(self, request: HttpRequest, vehicle_id: str) -> HttpResponse:
         # If renting request already exist do nothing
         # How to identify a pre existing request ?
         #   1. Filter all request where buyer is our current user(request.user)
         #   2. Filter all request which have status as PENDING
-        try: 
+        try:
             vehicle = Vehicles.objects.get(reference_id=vehicle_id)
             previous_request = VehicleRentingRequests.objects.filter(
                 buyer=request.user,
@@ -41,7 +41,7 @@ class BuyerVehicleDetailsView(AuthRequiredMixin, View):
 
             if previous_request.exists():
                 raise Exception("A pending request already exists for this user")
-            
+
             # If the request does not exists
             # Create a renting request
             VehicleRentingRequests.objects.create(
@@ -51,6 +51,11 @@ class BuyerVehicleDetailsView(AuthRequiredMixin, View):
                 status=RentingStatus.PENDING,
             )
             messages.success(request, "Your request has been sent to the renter")
+
+            Notifications(
+                notification_for=vehicle.owner.application_user,
+                message=f"Somebody requested renting for your car {vehicle.vehicle_name}",
+            ).save()
 
             return redirect(reverse("buyer_vehicle_details", args=[vehicle_id]))
         except Exception as e:
