@@ -107,7 +107,6 @@ class Notifications(BaseClass):
         return self.notification_type == NotificationType.TRANSACTION_REQUEST
 
 
-
 # Enums
 class RentingStatus(models.TextChoices):
     PENDING = "PENDING"
@@ -127,3 +126,33 @@ class VehicleRent(BaseClass):
     rent_request = models.ForeignKey(VehicleRentingRequests, on_delete=models.CASCADE)
     renting_period_remaining = models.IntegerField()
     notes = models.TextField(null=True, blank=True)
+
+
+class TransactionStatus(models.IntegerChoices):
+    FAILED = -2, "Failed"
+    CANCELLED = -1, "Cancelled"
+    PENDING = 0, "Due"
+    ACCEPTED = 1, "Accepted"
+    REJECTED = 2, "Rejected"
+    COMPLETED = 3, "Paid"
+
+
+class TransactionRequest(BaseClass):
+    renting_request = models.ForeignKey(VehicleRentingRequests, on_delete=models.CASCADE)
+    status = models.IntegerField(
+        choices=TransactionStatus,
+        default=TransactionStatus.PENDING
+    )
+
+    def get_status(self):
+        return TransactionStatus(self.status).label
+
+
+class Transactions(BaseClass):
+    transaction_request = models.OneToOneField(TransactionRequest, on_delete=models.CASCADE)
+    pidx = models.CharField(max_length=50, unique=True)
+    expires_in = models.PositiveIntegerField()
+    status = models.IntegerField(choices=TransactionStatus, default=TransactionStatus.PENDING)
+
+    def get_status(self):
+        return TransactionStatus(self.status).label
