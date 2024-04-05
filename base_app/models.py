@@ -85,7 +85,6 @@ class VehicleListingRequests(BaseClass):
     is_reviewed = models.BooleanField(default=False)
 
 
-
 # Enums
 class RentingStatus(models.TextChoices):
     PENDING = "PENDING"
@@ -99,6 +98,9 @@ class VehicleRentingRequests(BaseClass):
     # Rent for how many days?
     renting_period = models.PositiveIntegerField()
     status = models.TextField(choices=RentingStatus)
+
+    def __str__(self):
+        return f"{self.buyer.username} | {self.vehicle.vehicle_name}"
 
 
 class VehicleRent(BaseClass):

@@ -19,9 +19,7 @@ class NotificationListView(AuthRequiredMixin, View):
         notifications = []
         for notification in notifications_queryset:
             if notification.is_transaction_request():
-                redirect_link = notification.notification_redirect_link
-                transaction_request_id = redirect_link.split("/")[-2]
-                transaction_request = TransactionRequest.objects.get(reference_id=transaction_request_id)
+                transaction_request = notification.related_transaction_request
 
                 transaction_request_status = -1  # -1 for negative actions ( DECLINED, REJECTED, CANCELLED, FAILED)
                 if transaction_request.status == TransactionStatus.PENDING:

@@ -11,6 +11,8 @@ from base_app.models import (
     Notifications,
     VehicleRentingRequests,
     VehicleRent,
+    Transactions,
+    TransactionRequest,
 )
 
 
@@ -102,3 +104,7 @@ class VehicleRentingRequestsAdmin(admin.ModelAdmin):
 @admin.register(VehicleRent)
 class VehicleRentAdmin(admin.ModelAdmin):
     pass
+
+
+admin.site.register(TransactionRequest)
+admin.site.register(Transactions)
