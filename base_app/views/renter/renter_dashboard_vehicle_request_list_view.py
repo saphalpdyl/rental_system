@@ -42,7 +42,6 @@ class RenterDashboardVehicleRequestListView(AuthRequiredMixin, RenterRequiredMix
             renting_request.save()
 
             # Setting other request are not approved
-
             # Error: 01
             # other_requests = VehicleRentingRequests.objects.filter(vehicle=renting_request.vehicle, status=RentingStatus.PENDING).exclude(renting_request)
             other_requests = VehicleRentingRequests.objects.filter(vehicle=renting_request.vehicle, status=RentingStatus.PENDING).exclude(reference_id=renting_request.reference_id)
@@ -54,6 +53,11 @@ class RenterDashboardVehicleRequestListView(AuthRequiredMixin, RenterRequiredMix
             transaction_request = TransactionRequest.objects.create(
                 renting_request=renting_request,
             )
+
+            # Setting the vehicle as booked
+            renting_request.vehicle.is_booked = True
+            renting_request.vehicle.is_available = False
+            renting_request.save()
 
             Notifications(
                 notification_for=renting_request.buyer,

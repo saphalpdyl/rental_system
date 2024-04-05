@@ -65,17 +65,25 @@
               Available for booking <i class="fa fa-check"></i>
             </div>
             {% else %}
-            <div class="col-8 btn btn-outline-danger">
-              Not available
-            </div>
+              {% if vehicle.is_booked %}
+                <div class="col-12 btn btn-outline-info">
+                  Booked
+                </div>
+              {% else %}
+                <div class="col-12 btn btn-outline-danger">
+                  Not available
+                </div>
+              {% endif %}
             {% endif %}
             {% endif %}
+          {% if vehicle.is_available %}
           <a href="{% url 'renter_dashboard_vehicle_request_list' vehicle.reference_id %}" class="col-4 btn btn-primary position-relative">
             Requests
             {% if request_count > 0 %}
             <span class="badge badge-pill badge-danger bg-danger">{{ request_count }}</span>
             {% endif %}
           </a>
+          {% endif %}
 
         </div>
       </div>
