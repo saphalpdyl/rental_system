@@ -37,11 +37,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           {% if is_renting_currently %}
-            <small class="btn btn-primary position-absolute">
+            <a href="{% url 'current_rents' %}" class="badge bg-danger position-absolute">
               You are currently renting 
               &nbsp;
               <i class="fa fa-car"></i>
-            </small>
+            </a>
           {% endif %}
           <ul class="navbar-nav mx-auto mb-2 mb-lg-0 mr-auto">
 

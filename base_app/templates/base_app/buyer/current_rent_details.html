@@ -1,0 +1,61 @@
+{% extends 'base_app/base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/vehicle_details.css' %}">
+{% endblock css %}
+
+{% block content %}
+<div class="d-flex flex-column h-100 main-wrapper pt-3 my-5">
+  <div class="vehicle-list d-flex flex-column align-items-center">
+    {% for rent in vehicle_rents %}
+        <div class="d-flex col-11">
+          <!-- Content -->
+          <div class="col-6">
+              <div class="d-flex justify-content-between align-items-center">
+                  <h1 class="fw-bold vehicle-detail-content-title">{{ rent.rent_request.vehicle.vehicle_name }}</h1>
+                  <div class="d-flex gap-2 align-items-center px-2 py-1 rounded-2 border-success border">
+                      <span class="vehicle-detail-content-paragraph text-success">Available</span>
+                      <i class="fa fa-check text-success fs-7"></i>
+                  </div>
+              </div>
+              <hr>
+              <p class="vehicle-detail-content-paragraph">{{ rent.rent_request.vehicle.vehicle_desc }}</p>
+  
+              <div class="vehicle-detail-display-dashboard mt-5 align-items-center">
+                  <div class="col-6 d-flex flex-column">
+                      <span class="vehicle-detail-display-dashboard-subtitle">Price</span>
+                      <span class="vehicle-detail-display-dashboard-price">Rs. {{ rent.rent_request.vehicle.price }}</span>
+                  </div>
+                  <div class="col-6">
+                    <h4 class="remaining-date" data-date="{{ rent.expires_at|date:'c' }}"></h4>
+                  </div>
+              </div>
+          </div>
+          <!-- Image -->
+          <div class="col-6 d-flex justify-content-center">
+              <div
+                  style="background: url('{{ rent.rent_request.vehicle.vehicle_description_image.url }}');"
+                  class="col-10 vehicle-image"
+              ></div>
+          </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+  const date_expired_elements = document.querySelectorAll(".remaining-date");
+  for (expiry_element of date_expired_elements) {
+    const datetime = expiry_element.dataset.date
+    const timeDifferenceInWords = moment
+      .utc(datetime)
+      .local()
+      .startOf("hours")
+      .fromNow();
+    expiry_element.textContent = `Expires ${timeDifferenceInWords}`
+  }
+</script>
+{% endblock scripts %}
