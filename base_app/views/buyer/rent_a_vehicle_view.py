@@ -9,7 +9,7 @@ from base_app.mixins import AuthRequiredMixin
 
 class BuyerVehicleListView(AuthRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
-        vehicles = Vehicles.objects.filter(is_available=True)
+        vehicles = Vehicles.objects.filter(is_available=True, is_booked=False, can_be_listed=True)
 
         return render(request, "base_app/buyer/rent_a_vehicle.html", {
             "vehicles": vehicles,
