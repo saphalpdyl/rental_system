@@ -55,7 +55,21 @@
           <small class="vehicle-desc">{{ vehicle.vehicle_desc }}</small>
         </div>
         <div class="col-12 d-flex gap-2 ">
-          <div class="col-8 btn btn-outline-success">Available for booking <i class="fa fa-check"></i></div>
+            {% if not vehicle.can_be_listed %}
+            <div class="col-8 btn btn-outline-secondary">
+              Pending for admin review
+            </div>
+            {% else %}
+            {% if vehicle.is_available %}
+            <div class="col-8 btn btn-outline-success">
+              Available for booking <i class="fa fa-check"></i>
+            </div>
+            {% else %}
+            <div class="col-8 btn btn-outline-danger">
+              Not available
+            </div>
+            {% endif %}
+            {% endif %}
           <a href="{% url 'renter_dashboard_vehicle_request_list' vehicle.reference_id %}" class="col-4 btn btn-primary position-relative">
             Requests
             {% if request_count > 0 %}

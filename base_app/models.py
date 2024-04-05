@@ -73,6 +73,7 @@ class Vehicles(BaseClass):
         upload_to="uploads/", null=True, blank=True
     )
     is_available = models.BooleanField(default=True)
+    is_booked = models.BooleanField(default=False)
     can_be_listed = models.BooleanField(default=False)
 
     def __str__(self):
@@ -104,3 +105,9 @@ class VehicleRentingRequests(BaseClass):
     # Rent for how many days?
     renting_period = models.PositiveIntegerField()
     status = models.TextField(choices=RentingStatus)
+
+
+class VehicleRent(BaseClass):
+    rent_request = models.ForeignKey(VehicleRentingRequests, on_delete=models.CASCADE)
+    renting_period_remaining = models.IntegerField()
+    notes = models.TextField(null=True, blank=True)

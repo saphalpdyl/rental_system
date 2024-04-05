@@ -9,7 +9,8 @@ from base_app.models import (
     Vehicles,
     VehicleListingRequests,
     Notifications,
-    VehicleRentingRequests
+    VehicleRentingRequests,
+    VehicleRent,
 )
 
 
@@ -63,6 +64,7 @@ class VehiclesAdminView(admin.ModelAdmin):
         "vehicle_name",
         "can_be_listed",
         "is_available",
+        "is_booked",
     ]
 
 
@@ -95,3 +97,8 @@ class VehicleRentingRequestsAdmin(admin.ModelAdmin):
         "renting_period",
         "status"
     ]
+
+
+@admin.register(VehicleRent)
+class VehicleRentAdmin(admin.ModelAdmin):
+    pass
