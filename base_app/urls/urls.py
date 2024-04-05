@@ -7,6 +7,7 @@ from base_app.views.notifications import (
 from base_app.views.buyer import (
     BuyerVehicleListView,
     BuyerVehicleDetailsView,
+    TransactionRequestRespondView,
 )
 
 from .admin_urls import urlpatterns as admin_urlpatterns
@@ -22,6 +23,7 @@ urlpatterns = [
     ),
     path("vehicles/", BuyerVehicleListView.as_view(), name="buyer_vehicle_list"),
     path("vehicles/<str:vehicle_id>/", BuyerVehicleDetailsView.as_view(), name="buyer_vehicle_details"),
+    path("transaction/respond/<str:request_id>/", TransactionRequestRespondView.as_view(), name="transaction_request_respond"),
 ]
 
 urlpatterns += admin_urlpatterns

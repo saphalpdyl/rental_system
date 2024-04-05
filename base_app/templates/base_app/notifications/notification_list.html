@@ -27,11 +27,23 @@
       </a>
       {% endif %}
       {% if tr_status == 2 %}
-      <a href="" class="btn btn-primary text-white d-flex align-items-center">
+      <!--
+      <a href="{% url 'transaction_request_respond' nf.related_transaction_request.reference_id %}" class="btn btn-primary text-white d-flex align-items-center">
         <i class="fa fa-circle-info"></i>
         &nbsp;
-        View Details 
+        view details 
       </a>
+      -->
+      <form method="POST" action="{% url 'transaction_request_respond' nf.related_transaction_request.reference_id %}">
+        {% csrf_token %}
+        <button 
+          class="btn btn-primary text-white d-flex align-items-center"
+        >
+        <i class="fa fa-circle-info"></i>
+        &nbsp;
+        View details 
+        </button>
+      </form>
       {% endif %}
       {% endif %}
       <br>

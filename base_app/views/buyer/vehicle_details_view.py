@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.views import View
 from django.http import HttpRequest, HttpResponse
 from django.contrib import messages
+from django.utils import timezone
 
 from base_app.models import Vehicles, VehicleRentingRequests, RentingStatus, Notifications
 from base_app.mixins import AuthRequiredMixin
@@ -47,7 +48,7 @@ class BuyerVehicleDetailsView(AuthRequiredMixin, View):
             VehicleRentingRequests.objects.create(
                 buyer=request.user,
                 vehicle=vehicle,
-                renting_period=10,
+                renting_period=timezone.timedelta(minutes=5),
                 status=RentingStatus.PENDING,
             )
             messages.success(request, "Your request has been sent to the renter")

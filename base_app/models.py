@@ -96,7 +96,7 @@ class VehicleRentingRequests(BaseClass):
     buyer = models.ForeignKey(ApplicationUser, on_delete=models.CASCADE, related_name='renting_requests')
     vehicle = models.ForeignKey(Vehicles, on_delete=models.CASCADE, related_name='renting_requests')
     # Rent for how many days?
-    renting_period = models.PositiveIntegerField()
+    renting_period = models.DurationField()
     status = models.TextField(choices=RentingStatus)
 
     def __str__(self):
@@ -105,7 +105,7 @@ class VehicleRentingRequests(BaseClass):
 
 class VehicleRent(BaseClass):
     rent_request = models.ForeignKey(VehicleRentingRequests, on_delete=models.CASCADE)
-    renting_period_remaining = models.IntegerField()
+    expires_at = models.DateTimeField()
     notes = models.TextField(null=True, blank=True)
 
 
