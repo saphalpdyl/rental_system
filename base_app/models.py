@@ -103,9 +103,16 @@ class VehicleRentingRequests(BaseClass):
         return f"{self.buyer.username} | {self.vehicle.vehicle_name}"
 
 
+class VehicleRentStatus(models.TextChoices):
+    EXPIRED = "EXPIRED"
+    EXTENDED = "EXTENDED"
+    ACTIVE = "ACTIVE"
+
+
 class VehicleRent(BaseClass):
     rent_request = models.ForeignKey(VehicleRentingRequests, on_delete=models.CASCADE)
     expires_at = models.DateTimeField()
+    status = models.TextField(choices=VehicleRentStatus)
     notes = models.TextField(null=True, blank=True)
 
 

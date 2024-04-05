@@ -1,6 +1,6 @@
 from django.http import HttpRequest
 
-from .models import Notifications
+from .models import Notifications, VehicleRent, VehicleRentStatus
 
 
 def new_notification_context(request: HttpRequest):
@@ -11,4 +11,12 @@ def new_notification_context(request: HttpRequest):
             is_read=False
         ).exists()
 
+    return context
+
+def renting_status_context(request: HttpRequest):
+    context = {}
+    if request.user.is_authenticated:
+        if VehicleRent.objects.filter(rent_request__buyer=request.user, status=VehicleRentStatus.ACTIVE).exists():
+            context['is_renting_currently'] = True
+    
     return context

@@ -6,15 +6,16 @@ from django.utils import timezone
 from django.db import transaction as transaction_module
 
 from base_app.models import (
-    ApplicationUser,
     TransactionRequest,
     TransactionStatus,
     Transactions,
     Notifications,
     NotificationType,
     VehicleRent,
+    VehicleRentStatus,
 )
 from base_app.mixins import AuthRequiredMixin
+from base_app.models import generate_uuid
 
 
 class TransactionRequestRespondView(AuthRequiredMixin, View):
@@ -25,7 +26,7 @@ class TransactionRequestRespondView(AuthRequiredMixin, View):
             transaction_request = TransactionRequest.objects.get(reference_id=request_id)
             transaction = Transactions.objects.create(
                 transaction_request=transaction_request,
-                pidx="aausdhwuagduysadas",
+                pidx=generate_uuid(),
                 expires_in=29871283,
             )
 
@@ -55,6 +56,7 @@ class TransactionRequestRespondView(AuthRequiredMixin, View):
             VehicleRent(
                 rent_request=transaction_request.renting_request,
                 expires_at=timezone.now() + transaction_request.renting_request.renting_period,
+                status=VehicleRentStatus.ACTIVE,
             ).save()
 
             messages.success(request, "Payment Successful")

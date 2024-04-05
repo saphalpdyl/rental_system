@@ -55,9 +55,10 @@ class RenterDashboardVehicleRequestListView(AuthRequiredMixin, RenterRequiredMix
             )
 
             # Setting the vehicle as booked
-            renting_request.vehicle.is_booked = True
-            renting_request.vehicle.is_available = False
-            renting_request.save()
+            vehicle = renting_request.vehicle
+            vehicle.is_booked = True
+            vehicle.is_available = False
+            vehicle.save()
 
             Notifications(
                 notification_for=renting_request.buyer,
