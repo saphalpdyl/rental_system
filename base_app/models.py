@@ -85,11 +85,27 @@ class VehicleListingRequests(BaseClass):
     is_reviewed = models.BooleanField(default=False)
 
 
+class NotificationType(models.IntegerChoices):
+    SYSTEM = 0  # Default notification type
+    REQUEST_RESULT = 3  # Notification when any form of result ( Register ) is published
+    TRANSACTION = 4  # Notification for transactions
+    TRANSACTION_REQUEST = 5  # Notification for transaction requests
+
+
 class Notifications(BaseClass):
     notification_for = models.ForeignKey(ApplicationUser, on_delete=models.CASCADE)
     message = models.CharField(max_length=100)  # Main title
     desc = models.TextField(null=True, blank=True)
     is_read = models.BooleanField(default=False)
+    notification_type = models.IntegerField(
+        choices=NotificationType,
+        default=NotificationType.SYSTEM
+    )
+    notification_redirect_link = models.CharField(max_length=70, null=True, blank=True)
+
+    def is_transaction_request(self):
+        return self.notification_type == NotificationType.TRANSACTION_REQUEST
+
 
 
 # Enums
