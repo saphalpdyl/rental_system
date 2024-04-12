@@ -103,7 +103,7 @@ class VehicleRentingRequestsAdmin(admin.ModelAdmin):
 
 @admin.register(VehicleRent)
 class VehicleRentAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['rent_request', 'expires_at', 'status']
 
 
 @admin.register(TransactionRequest)
