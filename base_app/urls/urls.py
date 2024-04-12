@@ -7,13 +7,19 @@ from base_app.views.handlers import (
     HandleProfilePictureRemove
 )
 
+from base_app.views.transactions import (
+    TransactionConfirmCodeView,
+    TransactionInitiateView,
+    TransactionRequestRespondView
+)
+
 from base_app.views.notifications import (
     NotificationListView,
 )
 from base_app.views.buyer import (
     BuyerVehicleListView,
     BuyerVehicleDetailsView,
-    TransactionRequestRespondView,
+    # TransactionRequestRespondView,
     CurrentRentDetailsView,
 )
 
@@ -34,7 +40,10 @@ urlpatterns = [
     path("vehicles/", BuyerVehicleListView.as_view(), name="buyer_vehicle_list"),
     path("vehicles/<str:vehicle_id>/", BuyerVehicleDetailsView.as_view(), name="buyer_vehicle_details"),
     path("current_rents/", CurrentRentDetailsView.as_view(), name="current_rents"),
-    path("transaction/respond/<str:request_id>/", TransactionRequestRespondView.as_view(), name="transaction_request_respond"),
+    # path("transaction/respond/<str:request_id>/", TransactionRequestRespondView.as_view(), name="transaction_request_respond"),
+    path("transactions/request/respond/<str:tr_request_id>/", TransactionRequestRespondView.as_view(), name="transaction_request_respond"),
+    path("payment/initiate/", TransactionInitiateView.as_view(), name="payment_initiate"),
+    path("payment/initiate/code/", TransactionConfirmCodeView.as_view(), name="payment_initiate_confirm_code"),
 ]
 
 urlpatterns += admin_urlpatterns

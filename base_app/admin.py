@@ -106,5 +106,8 @@ class VehicleRentAdmin(admin.ModelAdmin):
     pass
 
 
-admin.site.register(TransactionRequest)
+@admin.register(TransactionRequest)
+class TransactionRequestAdmin(admin.ModelAdmin):
+    list_display = ['renting_request', 'status']
+
 admin.site.register(Transactions)

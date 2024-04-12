@@ -1,4 +1,3 @@
-from django.db.models import Q
 from django.utils import timezone
 
 from base_app.models import VehicleRent, VehicleRentStatus
@@ -17,6 +16,6 @@ class ServiceExpiryCheckMiddleware:
         # vehicle_rents = VehicleRent.objects.filter(Q(status=VehicleRentStatus.ACTIVE) | Q(status=VehicleRentStatus.EXTENDED))
         vehicle_rents = VehicleRent.objects.filter(status__in=[VehicleRentStatus.ACTIVE, VehicleRentStatus.EXTENDED])
         for rent in vehicle_rents:
-            if timezone.now() > rent.expires_at:
+            if timezone.localtime(timezone.now()) > rent.expires_at:
                 rent.status = VehicleRentStatus.EXPIRED
                 rent.save()

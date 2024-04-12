@@ -1,0 +1,17 @@
+{% extends 'base_app/base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/payment.css' %}">
+{% endblock css %}
+
+{% block content %}
+<div class="main-wrapper">
+    <form method="post" class="col-6 bg-white px-5 py-5">
+        <img src="{% static 'images/khalti_logo.png' %}" style="max-height:70px;" class="mb-5">
+        {% csrf_token %}
+        {{ payment_form.as_p }}
+        <input type="submit" value="Pay with Khalti" class="btn px-4">
+    </form>
+</div>
+{% endblock content %}

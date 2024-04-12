@@ -34,8 +34,7 @@
         view details 
       </a>
       -->
-      <form method="POST" action="{% url 'transaction_request_respond' nf.related_transaction_request.reference_id %}">
-        {% csrf_token %}
+      <form action="{% url 'transaction_request_respond' nf.related_transaction_request.reference_id %}">
         <button 
           class="btn btn-primary text-white d-flex align-items-center"
         >

@@ -1,0 +1,18 @@
+.main-wrapper {
+    background-color: #5e338d;
+    color: #5e338d;
+    align-items: center;
+    justify-content: center;
+
+    height: 100dvh;
+    width: 100dvw;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input[type="submit"] {
+    background-color: #5e338d!important;
+    color: white;
+}

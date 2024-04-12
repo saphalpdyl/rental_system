@@ -1,0 +1,52 @@
+{% extends 'base_app/base.html' %}
+{% load static %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/common.css' %}">
+{% endblock css %}
+
+{% block content %}
+<div class="container">
+  <div class="row mt-5">
+    <h1>Respond to Transaction Request</h1>
+    <div class="col-8 pe-4">
+      <div  class="form-control py-3">
+        <div class="d-flex gap-3">
+          <div><label class="form-label">Vehicle name</label><input disabled type="text" class="form-control" value="{{ transaction_request.renting_request.vehicle.vehicle_name }}"></div>
+          <div><label class="form-label">Final Price</label><input disabled type="text" class="form-control" value="{{ transaction_request.renting_request.vehicle.price }}"></div>
+          <form method="post" class="d-flex align-items-end">
+            {% csrf_token %}
+            <input type="submit" value="Reject Deal" class="px-2 py-1 h-0 btn btn-danger bg-danger">
+          </form>
+        </div>
+        <hr>
+        <form class="d-flex flex-row" action="{% url 'payment_initiate' %}">
+          <div class="col-6">
+            <h4>Total</h4>
+            <div class="col-3">
+              <h5 class="border py-2 px-1">Rs. {{ transaction_request.renting_request.vehicle.price }}</h5>
+            </div>
+            <br>
+              <div>
+                <input type="hidden" name="tr_request_id" value="{{ transaction_request.reference_id }}">
+                <input type="submit" class="btn btn-success px-5 py-2 fs-5" value="Go to payment">
+              </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  
+    <section class="seller-info col-4 border-start px-4 d-flex flex-column">
+      <div class="d-flex gap-2 align-items-center">
+        <img src="{{ seller.profile_picture.url }}" alt="Buyer Image" class="avatar">
+        <h3>Seller Info</h3>
+      </div>
+      <hr>
+      <span class="info-label fw-bolder">Name:</span> <span>{{ seller.first_name }} {{ seller.last_name}}</span><br>
+      <span class="info-label fw-bolder">Username:</span> <span>{{ seller.username }}</span><br>
+      <span class="info-label fw-bolder">Email:</span> <span>{{ seller.email }}</span><br>
+      <span class="info-label fw-bolder">Contact number:</span> <span>{{ seller.phone_no }}</span><br>
+    </section>
+  </div>
+</div>
+{% endblock content %}
