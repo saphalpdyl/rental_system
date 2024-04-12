@@ -14,7 +14,7 @@ class ApplicationUser(AbstractUser):
         max_length=32, primary_key=True, unique=True, default=generate_uuid
     )
     phone_no = models.CharField(max_length=12)
-    profile_picture = models.ImageField(upload_to="uploads/", null=True, blank=True)
+    profile_picture = models.ImageField(upload_to="uploads/", default="uploads/images/default_user_pp.jpg")
     is_renter = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
 

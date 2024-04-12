@@ -16,7 +16,6 @@ class ServiceExpiryCheckMiddleware:
         # Check every user_service objects in UserService model for active until expiration
         # vehicle_rents = VehicleRent.objects.filter(Q(status=VehicleRentStatus.ACTIVE) | Q(status=VehicleRentStatus.EXTENDED))
         vehicle_rents = VehicleRent.objects.filter(status__in=[VehicleRentStatus.ACTIVE, VehicleRentStatus.EXTENDED])
-        print("Hello World")
         for rent in vehicle_rents:
             if timezone.now() > rent.expires_at:
                 rent.status = VehicleRentStatus.EXPIRED

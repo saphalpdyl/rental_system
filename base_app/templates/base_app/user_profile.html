@@ -1,0 +1,128 @@
+{% extends 'base_app/user_profile_base.html' %}
+{% load static %}
+
+{% block profileactive %}active{% endblock profileactive %}
+
+{% block css %}
+<style>
+  .profile-picture {
+    vertical-align: middle;
+    width: 100px;
+    height: 100px;
+    border: 2px solid white;
+    box-shadow: 0px 3px 5px #555a;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  label {
+    font-weight: 600;
+  }
+
+</style>
+{% endblock css %}
+
+{% block dashboard_content %}
+<h3 class="mb-4">User Profile</h3>
+<div class="d-flex flex-row justify-content-around">
+  <div class="d-flex gap-3 align-items-center">
+    <img class="profile-picture" src="{{ user.profile_picture.url }}">
+    <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+  </div>
+  <div class="d-flex gap-4 align-items-center">
+    <form method="POST" action="{% url 'user_profile_picture_change' %}" class="d-flex flex-column" id="profile-picture-upload-form" enctype="multipart/form-data">
+      {% csrf_token %}
+      <label for="photo">Upload new photo</label>
+      <input id="profile-picture-upload" type="file" name="new_profile_picture" class="btn btn-light" accept=".png,.jpg,.jpeg">
+    </form>
+    <form method="POST" action="{% url 'user_profile_picture_remove' %}">
+      {% csrf_token %}
+      <input type="submit" value="Remove" class="btn btn-danger bg-danger px-2">
+    </form>
+  </div>
+</div>
+<hr>
+<form method="POST" >
+  {% csrf_token %}
+  <div class="d-flex justify-content-between mb-3">
+    <div class="form-floating col-5">
+      <input name="first_name" type="text" class="form-control" value="{{ user.first_name }}">
+      <label for="first_name" class="text-dark">First name</label>
+    </div>
+    <div class="form-floating col-5">
+      <input name="last_name" type="text" class="form-control" value="{{ user.last_name }}">
+      <label for="last_name" class="text-dark">Last name</label>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between mb-4">
+    <div class="form-floating mb-3 col-5">
+      <input name="username" type="text" class="form-control" value="{{ user.username }}">
+      <label for="username" class="text-dark">Username</label>
+    </div>
+    <div class="form-floating col-5">
+      <input name="phone_no" type="text" class="form-control" value="{{ user.phone_no }}">
+      <label for="phone_no" class="text-dark"><i class="fa fa-mobile"></i>&nbsp;Phone Number</label>
+    </div>
+  </div>
+  <h4>Change Password</h4>
+  <hr>
+  <div class="d-flex justify-content-between">
+    <div class="form-floating col-5">
+      <input name="new_password" type="password" class="form-control" placeholder="XXXXXXXX">
+      <label for="new_password" class="text-dark"><i class="fa fa-key"></i>&nbsp;New Password</label>
+    </div>
+    <div class="form-floating col-5">
+      <input name="new_password_confirm" type="password" class="form-control" placeholder="XXXXXXXX">
+      <label for="new_password_confirm" class="text-dark"><i class="fa fa-key"></i>&nbsp;Confirm new password</label>
+    </div>
+  </div>
+  <br>
+  <div class="d-flex justify-content-end gap-5 px-5">
+    <a href="{% url 'home' %}" class="btn btn-danger">Cancel</a>
+    <input type="submit" value="Save Changes" class="btn btn-success px-3">
+  </div>
+</form>
+{% if request.user.is_seller %}
+<h3>Seller Settings</h3>
+<form id="location_query" method="POST" action="{% url 'user_profile_handle_location_change' %}">
+  {% csrf_token %}
+  <input type="hidden" name="lat" id="lat_input">
+  <input type="hidden" name="long" id="long_input">
+</form>
+<button class="btn btn-outline-dark" id="location_get">Change Location</button>
+{% endif %}
+{% endblock dashboard_content %}
+
+
+{% block scripts %}
+  <script>
+    document.getElementById("profile-picture-upload").onchange = function() {
+      document.getElementById("profile-picture-upload-form").submit();
+    };
+
+  const location_btn = document.getElementById("location_get");
+  const location_query_form = document.getElementById("location_query");
+  const lat_input = document.getElementById("lat_input");
+  const long_input = document.getElementById("long_input");
+
+  location_btn.addEventListener("click", () => {
+    location_btn.disabled = true;
+    location_btn.textContent = "Getting Location...";
+
+    const successCallBack = (data) => {
+      lat_input.value = data.coords.latitude;
+      long_input.value = data.coords.longitude;
+      location_query_form.submit()
+    }
+
+    const errorCallBack = (data) => {
+      alertify.error("Couldn't get location!");
+      location_btn.disabled = false;
+      location_btn.textContent = "Try again";
+    }
+    
+    navigator.geolocation.getCurrentPosition(successCallBack, errorCallBack);
+  })
+
+  </script>
+{% endblock scripts %}

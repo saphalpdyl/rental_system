@@ -1,0 +1,40 @@
+{% extends 'base_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="d-flex col-12 gap-3">
+  <section id="sidebar" class="col-2">
+    <ul class="list-group">
+      <a href="{% url 'user_profile' %}" class="list-group-item d-flex align-items-center justify-content-between">
+        <div class="{% block profileactive %}{% endblock profileactive %}">
+          <i class="fa-regular fa-user"></i>
+          Manage Profile
+        </div>
+        <i class="fa fa-angle-right"></i>
+      </a>
+      {% if not request.user.is_admin %}
+      {% if not request.user.is_renter %}
+      <a href="" class="list-group-item d-flex align-items-center justify-content-between">
+        <div class="{% block ordersactive %}{% endblock ordersactive %}">
+          <i class="fa fa-bag-shopping"></i>
+          Renting history
+        </div>
+        <i class="fa fa-angle-right"></i>
+      </a>
+      {% endif %}
+      <a href="" class="list-group-item d-flex align-items-center justify-content-between">
+        <div class="{% block reviewsactive %}{% endblock reviewsactive %}">
+          <i class="fa-regular fa-star"></i>
+          My reviews
+        </div>
+        <i class="fa fa-angle-right"></i>
+      </a>
+      {% endif %}
+    </ul>
+  </section>
+  <section id="content-section" class="col-10 px-5 py-3">
+    {% block dashboard_content %}
+    {% endblock dashboard_content %}
+  </section>
+</div>
+{% endblock content %}

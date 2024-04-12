@@ -1,6 +1,12 @@
 from django.urls import path
 
 from base_app.views.home_view import HomeView
+from base_app.views.user_profile_view import UserProfileView
+from base_app.views.handlers import (
+    HandleProfilePictureChange,
+    HandleProfilePictureRemove
+)
+
 from base_app.views.notifications import (
     NotificationListView,
 )
@@ -17,6 +23,9 @@ from .renter_urls import urlpatterns as renter_urlpatterns
 
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
+    path("user/profile/", UserProfileView.as_view(), name="user_profile"),
+    path("user/profile/picture_change/", HandleProfilePictureChange.as_view(), name="user_profile_picture_change"),
+    path("user/profile/picture_remove/", HandleProfilePictureRemove.as_view(), name="user_profile_picture_remove"),
     path(
         "notifications/",
         NotificationListView.as_view(),
