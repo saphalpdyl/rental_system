@@ -1,3 +1,4 @@
 env/
 **.Identifier
 .rgignore
+**.pyc

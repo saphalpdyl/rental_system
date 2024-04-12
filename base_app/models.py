@@ -107,6 +107,7 @@ class VehicleRentStatus(models.TextChoices):
     EXPIRED = "EXPIRED"
     EXTENDED = "EXTENDED"
     ACTIVE = "ACTIVE"
+    COMPLETED = "COMPLETED"
 
 
 class VehicleRent(BaseClass):

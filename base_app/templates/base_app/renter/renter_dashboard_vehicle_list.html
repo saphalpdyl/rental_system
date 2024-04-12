@@ -42,7 +42,7 @@
     </ul>
   </div>
   <div class="content-container col-10">
-    {% for request_count , vehicle in vehicles_with_request_count %}
+    {% for request_count , expired_rent_exists, vehicle in vehicles_with_request_count %}
     <div class="vehicle-list-item d-flex flex px-5 py-3 mx-3 gap-2">
       <div 
         style="background:url('{{ vehicle.vehicle_description_image.url }}');"
@@ -66,9 +66,15 @@
             </div>
             {% else %}
               {% if vehicle.is_booked %}
+                {% if expired_rent_exists %}
+                <div class="col-12 btn btn-outline-success">
+                  Mark as completed
+                </div>
+                {% else %}
                 <div class="col-12 btn btn-outline-info">
                   Booked
                 </div>
+                {% endif %}
               {% else %}
                 <div class="col-12 btn btn-outline-danger">
                   Not available
