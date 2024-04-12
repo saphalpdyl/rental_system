@@ -18,6 +18,9 @@ class BuyerVehicleDetailsView(AuthRequiredMixin, View):
                 vehicle=vehicle
             )
 
+            if vehicle.is_booked == True:
+                return render(reverse("home"))
+
             return render(request, "base_app/buyer/vehicle_details.html", {
                 "vehicle": vehicle,
                 "is_previous_request_exists": previous_request.exists(),
