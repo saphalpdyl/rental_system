@@ -19,7 +19,7 @@ class BuyerVehicleDetailsView(AuthRequiredMixin, View):
             )
 
             if vehicle.is_booked == True:
-                return render(reverse("home"))
+                return redirect(reverse("home"))
 
             return render(request, "base_app/buyer/vehicle_details.html", {
                 "vehicle": vehicle,
