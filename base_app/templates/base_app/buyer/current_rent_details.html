@@ -50,10 +50,8 @@
   const date_expired_elements = document.querySelectorAll(".remaining-date");
   for (expiry_element of date_expired_elements) {
     const datetime = expiry_element.dataset.date
-    const timeDifferenceInWords = moment
-      .utc(datetime)
+    const timeDifferenceInWords = moment(datetime)
       .local()
-      .startOf("hours")
       .fromNow();
     expiry_element.textContent = `Expires ${timeDifferenceInWords}`
   }
