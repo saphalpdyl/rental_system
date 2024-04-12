@@ -24,7 +24,11 @@
                       <span class="vehicle-detail-display-dashboard-price">Rs. {{ rent.rent_request.vehicle.price }}</span>
                   </div>
                   <div class="col-6">
+                    {% if rent.status == "EXPIRED" %}
+                    <h4>EXPIRED</h4>
+                    {% else %}
                     <h4 class="remaining-date" data-date="{{ rent.expires_at|date:'c' }}"></h4>
+                    {% endif %}
                   </div>
               </div>
           </div>

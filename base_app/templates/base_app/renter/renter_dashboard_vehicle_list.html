@@ -67,9 +67,12 @@
             {% else %}
               {% if vehicle.is_booked %}
                 {% if expired_rent_exists %}
-                <div class="col-12 btn btn-outline-success">
-                  Mark as completed
-                </div>
+                <form method="POST" action="{% url 'renter_dashboard_mark_completed' vehicle.reference_id %}" class="col-12">
+                  {% csrf_token %}
+                  <button class="col-12 btn btn-outline-success">
+                    Mark as completed
+                  </button>
+                </form>
                 {% else %}
                 <div class="col-12 btn btn-outline-info">
                   Booked

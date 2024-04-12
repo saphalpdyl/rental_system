@@ -16,7 +16,7 @@ def new_notification_context(request: HttpRequest):
 def renting_status_context(request: HttpRequest):
     context = {}
     if request.user.is_authenticated:
-        if VehicleRent.objects.filter(rent_request__buyer=request.user, status=VehicleRentStatus.ACTIVE).exists():
+        if VehicleRent.objects.filter(rent_request__buyer=request.user, status__in=[VehicleRentStatus.ACTIVE, VehicleRentStatus.EXPIRED]).exists():
             context['is_renting_currently'] = True
     
     return context

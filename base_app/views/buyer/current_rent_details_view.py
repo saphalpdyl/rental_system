@@ -9,7 +9,7 @@ from base_app.mixins import AuthRequiredMixin
 
 class CurrentRentDetailsView(AuthRequiredMixin, View):
     def get(self, request: HttpRequest) -> HttpResponse:
-        vehicle_rents = VehicleRent.objects.filter(rent_request__buyer=request.user, status=VehicleRentStatus.ACTIVE)
+        vehicle_rents = VehicleRent.objects.filter(rent_request__buyer=request.user, status__in=[VehicleRentStatus.ACTIVE, VehicleRentStatus.EXPIRED])
 
         return render(request, "base_app/buyer/current_rent_details.html", {
             "vehicle_rents": vehicle_rents,
