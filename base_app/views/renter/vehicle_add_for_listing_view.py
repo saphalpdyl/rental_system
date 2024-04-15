@@ -1,6 +1,7 @@
 from django.http import HttpRequest
 from django.shortcuts import render, redirect, reverse
 from django.views import View
+from django.contrib import messages
 
 from base_app.mixins import AuthRequiredMixin, RenterRequiredMixin
 from base_app.models import (
@@ -15,35 +16,50 @@ class VehicleAddForListingView(AuthRequiredMixin, RenterRequiredMixin, View):
         return render(request, "base_app/renter/vehicle_add_for_listing.html")
 
     def post(self, request: HttpRequest):
-        name = request.POST["vehicle_name"]
-        desc = request.POST["vehicle_desc"]
-        price = request.POST["vehicle_price"]
-        company = request.POST["vehicle_company"]
-        vtype = request.POST["vehicle_type"]
-        seater = request.POST["vehicle_seater"]
-        number_plate = request.POST["vehicle_number_plate"]
+        try:
 
-        docs = request.FILES.get("vehicle_documents")
-        desc_img = request.FILES.get("vehicle_description_image")
+            name = request.POST["vehicle_name"]
+            desc = request.POST["vehicle_desc"]
+            price = request.POST["vehicle_price"]
+            company = request.POST["vehicle_company"]
+            vtype = request.POST["vehicle_type"]
+            seater = request.POST["vehicle_seater"]
+            number_plate = request.POST["vehicle_number_plate"]
 
-        current_renter_user = RenterUser.objects.get(application_user=request.user)
+            vehicle_lat = request.POST['lat']
+            vehicle_lng = request.POST['lng']
 
-        this_vehicle = Vehicles(
-            owner=current_renter_user,
-            vehicle_name=name,
-            vehicle_desc=desc,
-            price=price,
-            vehicle_company=company,
-            vehicle_type=vtype,
-            vehicle_seater=seater,
-            vehicle_number_plate=number_plate,
-            vehicle_documents=docs,
-            vehicle_description_image=desc_img,
-        )
-        this_vehicle.save()
+            if not vehicle_lat or not vehicle_lng:
+                messages.error(request, "Please choose a location")
+                return redirect(reverse("vehicle_add"))
 
-        VehicleListingRequests(
-            vehicle=this_vehicle,
-        ).save()
+            docs = request.FILES.get("vehicle_documents")
+            desc_img = request.FILES.get("vehicle_description_image")
 
-        return redirect(reverse("vehicle_add"))
+            current_renter_user = RenterUser.objects.get(application_user=request.user)
+
+            this_vehicle = Vehicles(
+                owner=current_renter_user,
+                vehicle_name=name,
+                vehicle_desc=desc,
+                price=price,
+                vehicle_company=company,
+                vehicle_type=vtype,
+                vehicle_seater=seater,
+                vehicle_number_plate=number_plate,
+                vehicle_documents=docs,
+                vehicle_description_image=desc_img,
+                location_lat=vehicle_lat,
+                location_lng=vehicle_lng,
+            )
+            this_vehicle.save()
+
+            VehicleListingRequests(
+                vehicle=this_vehicle,
+            ).save()
+
+            return redirect(reverse("vehicle_add"))
+        except Exception as e:
+            print(e)
+            messages.error(request, "Invalid input data")
+            return redirect(reverse("vehicle_add"))

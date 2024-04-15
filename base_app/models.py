@@ -72,6 +72,9 @@ class Vehicles(BaseClass):
     vehicle_description_image = models.ImageField(
         upload_to="uploads/", null=True, blank=True
     )
+    location_lat = models.DecimalField(max_digits=12, decimal_places=10)
+    location_lng = models.DecimalField(max_digits=12, decimal_places=10)
+    
     is_available = models.BooleanField(default=True)
     is_booked = models.BooleanField(default=False)
     can_be_listed = models.BooleanField(default=False)
