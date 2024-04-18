@@ -11,10 +11,17 @@ class RenterDashboardVehicleListView(AuthRequiredMixin, RenterRequiredMixin, Vie
         vehicles_of_renter = Vehicles.objects.filter(owner__application_user=request.user)
         request_count = []
         expired_rent_exists = []
+        vehicle_rents = []
 
         for vehicle in vehicles_of_renter:
             count = VehicleRentingRequests.objects.filter(vehicle=vehicle, status=RentingStatus.PENDING).count()
             is_rented_and_expired = VehicleRent.objects.filter(rent_request__vehicle=vehicle, status=VehicleRentStatus.EXPIRED).exists()
+            rent = VehicleRent.objects.filter(rent_request__vehicle=vehicle, status__in=[VehicleRentStatus.ACTIVE, VehicleRentStatus.EXPIRED, VehicleRentStatus.EXTENDED])
+            if rent.exists():
+                vehicle_rents.append(rent.first())
+            else:
+                vehicle_rents.append(None)
+
             request_count.append(count)
             expired_rent_exists.append(is_rented_and_expired)
         
@@ -27,7 +34,7 @@ class RenterDashboardVehicleListView(AuthRequiredMixin, RenterRequiredMixin, Vie
         # Vehicles with request count
         # where each element is a tuple in the form of ( pending_request_count, vehicle)
         # For example: ( 6, Vehicle<ZL1>)
-        vehicles_with_request_count = list(zip(request_count, expired_rent_exists, vehicles_of_renter))
+        vehicles_with_request_count = list(zip(request_count, expired_rent_exists, vehicles_of_renter, vehicle_rents))
 
         return render(request, "base_app/renter/renter_dashboard_vehicle_list.html", {
             "vehicles": vehicles_of_renter,
