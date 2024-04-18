@@ -1,0 +1,66 @@
+{% extends 'base_app/base.html' %}
+
+{% block css %}
+<style>
+.main-wrapper {
+  height: calc(100vh - 36px);
+}
+
+.vehicle-list-item {
+  height: 200px;
+}
+
+.vehicle-item-image-container {
+  background-position: center!important;
+  background-size: cover!important;
+  background-repeat: no-repeat!important;
+  border-radius: 10px;
+}
+
+.vehicle-desc {
+  display: flex;
+  font-size: 12px;
+  max-height: 100px;
+  color: #000a;
+  overflow: hidden;
+}
+
+.badge {
+  position: absolute!important;
+  top: -5px!important;
+  right: -10px!important;
+}
+</style>
+{% endblock css %}
+
+{% block content %}
+<div class="main-wrapper col-12 d-flex">
+  <div class="sidebar-container col-2 border-end">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item active" aria-current="true">Listed vehicles</li>
+      <li class="list-group-item">My reviews</li>
+    </ul>
+  </div>
+  <div class="content-container col-10">
+    <div class="container mt-5 col-4">
+        <h1>Extend Rent Time</h1>
+        <br>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+          
+            <div class="mb-3">
+            <label for="vehicle_name" class="form-label">Vehicle Name</label>
+            <input type="text" class="form-control" id="vehicle_name" name="vehicle_name" disabled value="{{ rent.rent_request.vehicle.vehicle_name }}">
+            </div>
+          
+            <div class="mb-3">
+            <label for="vehicle_extend_by" class="form-label">Extend by (days)</label>
+            <input class="form-control" id="vehicle_extend_by" name="vehicle_extend_by" type="number" min="0" max="100" value="2"/>
+            </div>
+          
+            <button type="submit" class="btn btn-primary col-12">Extend</button>
+            </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}
