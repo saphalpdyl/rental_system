@@ -42,7 +42,7 @@
     </ul>
   </div>
   <div class="content-container col-10">
-    {% for request_count , expired_rent_exists, vehicle in vehicles_with_request_count %}
+    {% for request_count , expired_rent_exists, vehicle, rent in vehicles_with_request_count %}
     <div class="vehicle-list-item d-flex flex px-5 py-3 mx-3 gap-2">
       <div 
         style="background:url('{{ vehicle.vehicle_description_image.url }}');"
@@ -69,15 +69,16 @@
                 {% if expired_rent_exists %}
                 <form method="POST" action="{% url 'renter_dashboard_mark_completed' vehicle.reference_id %}" class="col-12">
                   {% csrf_token %}
-                  <button class="col-12 btn btn-outline-success">
+                  <button class="col-8 btn btn-outline-success">
                     Mark as completed
                   </button>
                 </form>
                 {% else %}
-                <div class="col-12 btn btn-outline-info">
+                <div class="col-8 btn btn-outline-info">
                   Booked
                 </div>
                 {% endif %}
+                <a href="{% url 'vehicle_rent_extend' rent.reference_id %}" class="col-4 btn btn-success">Extend &nbsp;<i class="fa fa-plus"></i></a>
               {% else %}
                 <div class="col-12 btn btn-outline-danger">
                   Not available
