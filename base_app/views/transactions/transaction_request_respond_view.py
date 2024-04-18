@@ -19,11 +19,14 @@ class TransactionRequestRespondView(AuthRequiredMixin, View):
         if not (transaction_request.status == TransactionStatus.PENDING):
             messages.error(request, "This transaction request has already been processed")
             return redirect(reverse("notification_list_view"))
+        
+        total_price = transaction_request.days * transaction_request.price_per_day
 
         renter: ApplicationUser = transaction_request.renting_request.vehicle.owner.application_user
         return render(request, "base_app/transactions/transaction_request_respond.html", {
             "transaction_request": transaction_request,
             "seller": renter,
+            "total_price": total_price,
         })
 
     # Reject Request
@@ -46,9 +49,9 @@ class TransactionRequestRespondView(AuthRequiredMixin, View):
             notification_for=transaction_request.renting_request.vehicle.owner.application_user,
             message="Transaction request reject",
             desc="Your transaction request for {} with {} at {} has been rejected".format(
-                transaction_request.renting_request.vehicle.vehicle_name,
+                transaction_request.days * transaction_request.price_per_day,
                 request.user.username,
-                transaction_request.renting_request.vehicle.price
+                transaction_request.price_per_day
             ),
             notification_type=NotificationType.TRANSACTION,
         ).save()

@@ -8,6 +8,10 @@ from base_app.mixins import AuthRequiredMixin, RenterRequiredMixin
 from base_app.models import (
     VehicleRent,
     VehicleRentStatus,
+    Notifications,
+    NotificationType,
+    TransactionRequest,
+    TransactionType,
 )
 
 
@@ -31,6 +35,27 @@ class VehicleRentExtendView(AuthRequiredMixin, RenterRequiredMixin, View):
             rent.expires_at = timezone.localtime(timezone.now()) + timezone.timedelta(minutes=extension_days)
             rent.status = VehicleRentStatus.ACTIVE
             rent.save()
+
+            transaction_request = TransactionRequest.objects.create(
+                renting_request=rent.rent_request,
+                days=extension_days,
+                price_per_day=rent.rent_request.vehicle.price,
+                request_type=TransactionType.EXTENSION,
+            )
+
+            Notifications(
+                notification_for=rent.rent_request.buyer,
+                message=f"Your vehicle rent for {rent.rent_request.vehicle.vehicle_name} has been extended by {extension_days} days. Pay for the extension as soon as possible.",
+                desc="Please return the vehicle on {rent.expires_at} as close to the expiry time as possible",
+                related_transaction_request=transaction_request,
+                notification_type=NotificationType.TRANSACTION_REQUEST,
+            ).save()
+
+            Notifications(
+                notification_for=rent.rent_request.vehicle.owner.application_user,
+                message=f"You have extended {rent.rent_request.buyer.first_name}'s rent by {extension_days} days",
+                desc=""
+            ).save()
             
             messages.success(request, f"Rent extended by {extension_days} days")
             return redirect(reverse("renter_dashboard_vehicle_list"))

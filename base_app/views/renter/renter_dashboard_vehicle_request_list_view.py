@@ -52,6 +52,9 @@ class RenterDashboardVehicleRequestListView(AuthRequiredMixin, RenterRequiredMix
             # Create the transaction request and the notification
             transaction_request = TransactionRequest.objects.create(
                 renting_request=renting_request,
+                # TODO : Make this dynamically choosable
+                days=4,
+                price_per_day=renting_request.vehicle.price,
             )
 
             # Setting the vehicle as booked

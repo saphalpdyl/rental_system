@@ -129,12 +129,20 @@ class TransactionStatus(models.IntegerChoices):
     COMPLETED = 3, "Paid"
 
 
+class TransactionType(models.TextChoices):
+    RENTAL = "RENTAL"
+    EXTENSION = "EXTENSION"
+
 class TransactionRequest(BaseClass):
     renting_request = models.ForeignKey(VehicleRentingRequests, on_delete=models.CASCADE)
     status = models.IntegerField(
         choices=TransactionStatus,
         default=TransactionStatus.PENDING
     )
+    request_type = models.TextField(choices=TransactionType, default=TransactionType.RENTAL)
+
+    days = models.IntegerField()
+    price_per_day = models.FloatField()
 
     def get_status(self):
         return TransactionStatus(self.status).label
