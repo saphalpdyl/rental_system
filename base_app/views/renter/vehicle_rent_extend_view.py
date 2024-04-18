@@ -32,7 +32,7 @@ class VehicleRentExtendView(AuthRequiredMixin, RenterRequiredMixin, View):
             extension_days = int(request.POST['vehicle_extend_by'])
 
             # TODO: Change from minutes to days
-            rent.expires_at = timezone.localtime(timezone.now()) + timezone.timedelta(minutes=extension_days)
+            rent.expires_at = timezone.localtime(rent.expires_at) + timezone.timedelta(minutes=extension_days)
             rent.status = VehicleRentStatus.ACTIVE
             rent.save()
 
