@@ -21,6 +21,7 @@ from base_app.views.buyer import (
     BuyerVehicleDetailsView,
     # TransactionRequestRespondView,
     CurrentRentDetailsView,
+    BuyerRentingHistoryView
 )
 
 from base_app.views.reviews import (
@@ -38,6 +39,7 @@ urlpatterns = [
     path("user/profile/picture_change/", HandleProfilePictureChange.as_view(), name="user_profile_picture_change"),
     path("user/profile/picture_remove/", HandleProfilePictureRemove.as_view(), name="user_profile_picture_remove"),
     path("user/profile/myreviews/", UserProfileMyReviewsView.as_view(), name="user_profile_myreviews"),
+    path("user/profile/myrentinghistory/", BuyerRentingHistoryView.as_view(), name="user_profile_myrentinghistory"),
     path(
         "notifications/",
         NotificationListView.as_view(),

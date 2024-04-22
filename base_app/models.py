@@ -192,5 +192,4 @@ class Review(BaseClass):
     vehicle = models.ForeignKey(Vehicles, on_delete=models.CASCADE)
     description = models.CharField(max_length=200, null=True, blank=True)
     rating = models.IntegerField(choices=Ratings)
-    is_rating_only = models.BooleanField()
     reviewer = models.ForeignKey(ApplicationUser, on_delete=models.CASCADE)

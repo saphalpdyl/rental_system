@@ -14,7 +14,7 @@
       </a>
       {% if not request.user.is_admin %}
       {% if not request.user.is_renter %}
-      <a href="" class="list-group-item d-flex align-items-center justify-content-between">
+      <a href="{% url 'user_profile_myrentinghistory' %}" class="list-group-item d-flex align-items-center justify-content-between">
         <div class="{% block ordersactive %}{% endblock ordersactive %}">
           <i class="fa fa-bag-shopping"></i>
           Renting history

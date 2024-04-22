@@ -32,7 +32,7 @@ class VehicleReviewCreateView(AuthRequiredMixin, View):
             return redirect(reverse("vehicle_review_create", args=[vehicle_rent_id]))
 
         Review(
-            data_generated_by=request.user,
+            reviewer=request.user,
             description=' '.join(description.split()) or None,
             vehicle=vehicle_rent.rent_request.vehicle,
             rating=rating
@@ -40,7 +40,7 @@ class VehicleReviewCreateView(AuthRequiredMixin, View):
 
         Notifications(
             notification_for=vehicle_rent.rent_request.vehicle.owner.application_user,
-            notification_message=f"You have been reviewd by {request.user.username} for vehicle {vehicle_rent.rent_request.vehicle.vehicle_name} for a rating of {rating}"
+            message=f"You have been reviewd by {request.user.username} for vehicle {vehicle_rent.rent_request.vehicle.vehicle_name} for a rating of {rating}"
         ).save()
 
         return redirect(reverse("home"))
