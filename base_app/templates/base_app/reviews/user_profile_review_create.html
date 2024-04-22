@@ -1,0 +1,84 @@
+{% extends 'base_app/user_profile_base.html' %}
+{% load static %}
+
+{% block ordersactive %}active{% endblock ordersactive %}
+
+{% block css %}
+<style>
+input.star { display: none; }
+
+label.star {
+  float: right;
+  padding: 10px;
+  font-size: 18px;
+  color: #4A148C;
+  transition: all .2s;
+}
+
+input.star:checked ~ label.star:before {
+  content: '\f005';
+  color: #FD4;
+  transition: all .25s;
+}
+ 
+input.star-5:checked ~ label.star:before {
+  color: #FE7;
+}
+
+input.star-1:checked ~ label.star:before { color: #F62; }
+
+label.star:before {
+  content: '\f006';
+  font-family: FontAwesome;
+}
+</style>
+{% endblock css %}
+
+{% block dashboard_content %}
+<h3 class="mb-4">Create a Review</h3>
+<table class="table fw-light">
+  <thead>
+    <tr>
+      <th></th>
+      <th scope="col">Vehicle rent id</th>
+      <th scope="col">Vehicle Name</th>
+      <th scope="col">Vehicle type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img style="max-height:100px;" src="{{ vehicle_rent.rent_request.vehicle.vehicle_description_image.url }}" alt="Item Image"/></td>
+      <td>{{ vehicle_rent.reference_id|slice:"10" }}</td>
+      <td>{{ vehicle_rent.rent_request.vehicle.vehicle_name }}</td>
+      <td>{{ vehicle_rent.rent_request.vehicle.vehicle_type }}</td>
+    </tr>
+  </tbody>
+</table>
+<h5>What do you think of the vehicle ?</h5>
+<form method="POST" class="form-control">
+  {% csrf_token %}
+  <div>
+    <input class="star star-5" id="star-5" type="radio" name="star" value="5"/>
+    <label class="star star-5" for="star-5"></label>
+    <input class="star star-4" id="star-4" type="radio" name="star" value="4"/>
+    <label class="star star-4" for="star-4"></label>
+    <input class="star star-3" id="star-3" type="radio" name="star" value="3"/>
+    <label class="star star-3" for="star-3"></label>
+    <input class="star star-2" id="star-2" type="radio" name="star" value="2"/>
+    <label class="star star-2" for="star-2"></label>
+    <input class="star star-1" id="star-1" type="radio" name="star" value="1"/>
+    <label class="star star-1" for="star-1"></label>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="description">Description</label>
+    <textarea type="text" class="form-control" name="description"></textarea>
+    <div class="form-text">The description is optional.</div>
+  </div>
+  <input type="submit" class="px-4 mb-3 btn btn-success bg-success" value="Send review">
+</form>
+{% endblock dashboard_content %}
+
+
+{% block scripts %}
+{% endblock scripts %}

@@ -13,6 +13,7 @@ from base_app.models import (
     VehicleRent,
     Transactions,
     TransactionRequest,
+    Review
 )
 
 
@@ -111,3 +112,4 @@ class TransactionRequestAdmin(admin.ModelAdmin):
     list_display = ['renting_request', 'status']
 
 admin.site.register(Transactions)
+admin.site.register(Review)

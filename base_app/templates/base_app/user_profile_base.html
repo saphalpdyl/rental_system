@@ -22,7 +22,7 @@
         <i class="fa fa-angle-right"></i>
       </a>
       {% endif %}
-      <a href="" class="list-group-item d-flex align-items-center justify-content-between">
+      <a href="{% url 'user_profile_myreviews' %}" class="list-group-item d-flex align-items-center justify-content-between">
         <div class="{% block reviewsactive %}{% endblock reviewsactive %}">
           <i class="fa-regular fa-star"></i>
           My reviews

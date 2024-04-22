@@ -1,0 +1,33 @@
+{% extends 'base_app/user_profile_base.html' %}
+{% load static %}
+
+{% block reviewsactive %}active{% endblock reviewsactive %}
+
+{% block css %}
+{% endblock css %}
+
+{% block dashboard_content %}
+<h3 class="mb-4">My Reviews</h3>
+{% for review in reviews %}
+  <div class="form-control mb-4">
+    <section class="d-flex justify-content-between">
+      <div>
+        <h5>{{ review.vehicle.owner.application_user.first_name }} {{ review.vehicle.owner.application_user.last_name }}</h5>
+        <small>@{{ review.vehicle.owner.application_user.username }}</small>
+      </div>
+      <div class="text-warning">
+      {% for i in ratings %} 
+        {% if i <= review.rating %}
+          <i class="fa fa-star"></i>
+        {% else %}
+          <i class="far fa-star"></i>
+        {% endif %}
+      {% endfor %}
+      </div>
+    </section>
+  <hr>
+  <h4>Description</h4>
+  <textarea type="text" class="form-control" disabled>{{ review.description }}</textarea>
+  </div>
+{% endfor %}
+{% endblock dashboard_content %}

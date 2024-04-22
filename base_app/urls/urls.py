@@ -23,6 +23,11 @@ from base_app.views.buyer import (
     CurrentRentDetailsView,
 )
 
+from base_app.views.reviews import (
+    VehicleReviewCreateView,
+    UserProfileMyReviewsView,
+)
+
 from .admin_urls import urlpatterns as admin_urlpatterns
 from .auth_urls import urlpatterns as auth_urlpatterns
 from .renter_urls import urlpatterns as renter_urlpatterns
@@ -32,6 +37,7 @@ urlpatterns = [
     path("user/profile/", UserProfileView.as_view(), name="user_profile"),
     path("user/profile/picture_change/", HandleProfilePictureChange.as_view(), name="user_profile_picture_change"),
     path("user/profile/picture_remove/", HandleProfilePictureRemove.as_view(), name="user_profile_picture_remove"),
+    path("user/profile/myreviews/", UserProfileMyReviewsView.as_view(), name="user_profile_myreviews"),
     path(
         "notifications/",
         NotificationListView.as_view(),
@@ -44,6 +50,7 @@ urlpatterns = [
     path("transactions/request/respond/<str:tr_request_id>/", TransactionRequestRespondView.as_view(), name="transaction_request_respond"),
     path("payment/initiate/", TransactionInitiateView.as_view(), name="payment_initiate"),
     path("payment/initiate/code/", TransactionConfirmCodeView.as_view(), name="payment_initiate_confirm_code"),
+    path("vehicles/review/create/<str:vehicle_rent_id>/", VehicleReviewCreateView.as_view(), name="vehicle_review_create")
 ]
 
 urlpatterns += admin_urlpatterns

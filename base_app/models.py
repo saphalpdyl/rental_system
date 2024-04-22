@@ -179,3 +179,18 @@ class Notifications(BaseClass):
 
     def is_transaction_request(self):
         return self.notification_type == NotificationType.TRANSACTION_REQUEST
+
+class Ratings(models.IntegerChoices):
+    VERY_BAD = 1
+    BAD = 2
+    NORMAL = 3
+    GOOD = 4
+    VERY_GOOD = 5
+
+
+class Review(BaseClass):
+    vehicle = models.ForeignKey(Vehicles, on_delete=models.CASCADE)
+    description = models.CharField(max_length=200, null=True, blank=True)
+    rating = models.IntegerField(choices=Ratings)
+    is_rating_only = models.BooleanField()
+    reviewer = models.ForeignKey(ApplicationUser, on_delete=models.CASCADE)
