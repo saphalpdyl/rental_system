@@ -4,7 +4,7 @@ from django.http import HttpRequest, HttpResponse
 from django.contrib import messages
 from django.utils import timezone
 
-from base_app.models import Vehicles, VehicleRentingRequests, RentingStatus, Notifications
+from base_app.models import Vehicles, VehicleRentingRequests, RentingStatus, Notifications, Review
 from base_app.mixins import AuthRequiredMixin
 
 
@@ -21,9 +21,13 @@ class BuyerVehicleDetailsView(AuthRequiredMixin, View):
             if vehicle.is_booked == True:
                 return redirect(reverse("home"))
 
+            # Reviews
+            related_reviews = Review.objects.filter(vehicle=vehicle)
+
             return render(request, "base_app/buyer/vehicle_details.html", {
                 "vehicle": vehicle,
                 "is_previous_request_exists": previous_request.exists(),
+                "reviews": related_reviews,
             })
         except Exception as e:
             messages.error(request, f"ERROR: {e}")

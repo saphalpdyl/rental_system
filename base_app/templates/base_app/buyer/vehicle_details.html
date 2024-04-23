@@ -3,6 +3,7 @@
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/vehicle_details.css' %}">
+<link rel="stylesheet" href="{% static 'css/common.css' %}">
 {% endblock css %}
 
 {% block content %}
@@ -80,7 +81,35 @@
     {% endif %}
 </div>
 <div class="d-flex justify-content-center">
-    <div id="map" class="bg-secondary col-11 rounded-3 my-5" style="min-height: 600px;"></div>
+    <div id="map" class="bg-secondary col-7 rounded-3 my-5" style="min-height: 600px;"></div>
+    <div class="flex flex-col col-4 ms-3">
+        <h4>Reviews</h4>
+        <hr>
+        {% for review in reviews %}
+        <div class="d-flex align-items-center">
+            <img class="mini-avatar" src="{{ review.reviewer.profile_picture.url }}">
+            <div class="d-flex align-items-center ms-1">
+                <span class="">{{ review.reviewer.first_name }}{{ review.reviewer.last_name }}</span>
+                <small class="text-secondary ms-2">@{{ review.reviewer.username }}</small>
+            </div>
+        </div>
+        <div class="text-warning">
+            <i class="fa{% if review.rating < 1.0 %}r{% endif %} fa-star"></i>
+            <i class="fa{% if review.rating < 2.0 %}r{% endif %} fa-star"></i>
+            <i class="fa{% if review.rating < 3.0 %}r{% endif %} fa-star"></i>
+            <i class="fa{% if review.rating < 4.0 %}r{% endif %} fa-star"></i>
+            <i class="fa{% if review.rating < 5.0 %}r{% endif %} fa-star"></i>
+        </div>
+        {% if review.description %}
+        <p>{{ review.description }}</p>
+        {% endif %}
+        {% empty %}
+        <div class="d-flex flex-column align-items-center col-12 justify-content-center gap-4">
+            <i class="far fa-heart text-secondary" style="font-size: 8rem;"></i>
+            <h5 class="text-secondary">No Reviews yet</h5>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock content %}
 
