@@ -65,7 +65,7 @@ class RenterDashboardVehicleRequestListView(AuthRequiredMixin, RenterRequiredMix
 
             Notifications(
                 notification_for=renting_request.buyer,
-                message="{} has accepting your request for renting {}".format(
+                message="{} has accepted your request for renting {}".format(
                     request.user.username,
                     renting_request.vehicle.vehicle_name,
                 ),
