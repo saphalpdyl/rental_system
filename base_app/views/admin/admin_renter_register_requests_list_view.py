@@ -17,5 +17,3 @@ class AdminRenterRegisterRequestsListView(AuthRequiredMixin, AdminRequiredMixin,
             "base_app/admin/admin_renter_register_requests.html",  # TEMPLATE
             {"requests": register_requests},  # CONTEXT
         )
-
-        return redirect(reverse("home"))

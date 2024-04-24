@@ -7,7 +7,8 @@ from base_app.models import (
     AdminUser,
     RenterRegisterResults,
     ApplicationUser,
-    RenterUser
+    RenterUser,
+    Notifications,
 )
 from base_app.mixins import AuthRequiredMixin, AdminRequiredMixin
 
@@ -65,6 +66,13 @@ class HandleAcceptRegisterRequest(AuthRequiredMixin, AdminRequiredMixin, View):
         # Create a RenterUser
         RenterUser(
             application_user=requester  # Create a corresponding RenterUser for the requester
+        ).save()
+
+        # Send a notification
+        Notifications(
+            notification_for=register_request.application_user,
+            message="Transaction request reject",
+            desc="Your request to become a renter has been accepted",
         ).save()
 
         return redirect(reverse("admin_renter_register_list"))

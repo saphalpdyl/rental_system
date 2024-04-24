@@ -2,7 +2,7 @@ from django.shortcuts import redirect, reverse
 from django.http import HttpRequest
 from django.views import View
 
-from base_app.models import RenterRegisterRequests, AdminUser, RenterRegisterResults
+from base_app.models import RenterRegisterRequests, AdminUser, RenterRegisterResults, Notifications
 from base_app.mixins import AuthRequiredMixin, AdminRequiredMixin
 
 
@@ -28,5 +28,11 @@ class HandleRejectRegisterRequest(AuthRequiredMixin, AdminRequiredMixin, View):
             is_approved=False,  # Because the request was rejected
         ).save()
         register_request.save()
+
+        Notifications(
+            notification_for=register_request.application_user,
+            message="Transaction request reject",
+            desc="Your request to become a renter has been rejected",
+        ).save()
 
         return redirect(reverse("admin_renter_register_list"))
