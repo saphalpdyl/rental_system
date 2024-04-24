@@ -7,8 +7,6 @@ from django.db.models import Q
 from base_app.models import (
     Vehicles,
     RenterRegisterRequests,
-    VehicleRent,
-    VehicleRentStatus,
 )
 
 

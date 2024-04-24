@@ -31,7 +31,7 @@ class HandleRejectRegisterRequest(AuthRequiredMixin, AdminRequiredMixin, View):
 
         Notifications(
             notification_for=register_request.application_user,
-            message="Transaction request reject",
+            message="Rental request reject",
             desc="Your request to become a renter has been rejected",
         ).save()
 
