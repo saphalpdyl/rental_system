@@ -74,6 +74,18 @@ class RenterDashboardVehicleRequestListView(AuthRequiredMixin, RenterRequiredMix
                 related_transaction_request=transaction_request
             ).save()
 
+            # Send notifications to each one that their renting request has been rejected
+            for rrequest in other_requests:
+                Notifications(
+                    notification_for=rrequest.buyer,
+                    message="{} has rejected your request for renting {}".format(
+                        request.user.username,
+                        renting_request.vehicle.vehicle_name,
+                    ),
+                    desc="Accept to be redirected to payment window.",
+                    notification_type=NotificationType.REQUEST_RESULT,
+                ).save()
+
             return redirect(reverse("renter_dashboard_vehicle_list"))
 
         except Exception as e:
